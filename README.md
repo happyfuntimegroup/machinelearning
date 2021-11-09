@@ -15,6 +15,7 @@ Some of them might end up not being used, as we will need to see if they are act
 
 ## Tasks
 We can update each other about current tasks that we came up with. Use strikethrough ('\~~(text)\~~') to show it has been completed.
+
 - Albert:
   -  ~~Function to split train dataset into train & validation set.~~
   -  Open issues for individual feature extractions/creations.
