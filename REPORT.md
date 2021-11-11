@@ -7,9 +7,9 @@ the following:
 • Description of your computational learning experiments, including:
 
 - feature engineering
-– learning algorithm(s)
-– hyperparameter tuning
-– discussion of the performance of your solution
+- learning algorithm(s)
+- hyperparameter tuning
+- discussion of the performance of your solution
 
 ### Page 2
 • The name of the account under which you submitted your results to the
