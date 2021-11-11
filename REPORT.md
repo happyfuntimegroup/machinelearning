@@ -12,7 +12,7 @@ the following:
 - discussion of the performance of your solution
 
 ### Page 2
-• The name of the account under which you submitted your results to the
+- The name of the account under which you submitted your results to the
 competition on Codalab (see below)
-• Detailed specification of the work done by group members
-• References or appendices (if applicable)
+- Detailed specification of the work done by group members
+- References or appendices (if applicable)
