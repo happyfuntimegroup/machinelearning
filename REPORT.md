@@ -5,7 +5,8 @@ the following:
 
 ### Page 1
 • Description of your computational learning experiments, including:
-– feature engineering
+
+- feature engineering
 – learning algorithm(s)
 – hyperparameter tuning
 – discussion of the performance of your solution
