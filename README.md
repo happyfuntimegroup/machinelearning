@@ -17,7 +17,7 @@ We can update each other about current tasks that we came up with. Use strikethr
      In the upcoming days, I will open a number of issues; each issues specifically for an individual feature. Features will be based on the current literature (i.e. what current citation prediction models have been using as predictors). Some of them might end up not being used, as we will need to see if they are actually useful for our models (i.e. see if the addition of a feature explains a significant % of the data correctly).
   - Features:
     - ~~Team size (Team)~~
-    - Author productivity (AuthDiv)
+    - Author productivity (ProAuth)
 
 #### Melody:
   - Features:
