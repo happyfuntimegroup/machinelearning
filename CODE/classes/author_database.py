@@ -7,6 +7,7 @@ def author_database(df):
     Output:
         - unique_authors:   list of unique authors in the dataset      [list]
     """
+    import pandas as pd
     unique_authors = []
     for i in df['authors']:
         for j in i:
@@ -19,4 +20,4 @@ def author_database(df):
             name = first + last         # Combine first letter and last name
             if name not in unique_authors:
                 unique_authors.append(name)
-    return unique_authors
+    return pd.Series(unique_authors)
