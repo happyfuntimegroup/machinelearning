@@ -4,4 +4,3 @@ import sys
 
 if __name__ == '__main__':
     Paper('DATA/train-1.json')
-#test
