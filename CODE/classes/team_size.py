@@ -6,7 +6,7 @@ def team_size(df):
     Output:
         - team_size:        vector of team_size for each paper of the given dataset         [pandas series]
                             with team_size                                                  [int]
-    """"
+    """
     import pandas as pd
 
     team_size = pd.Series([len(i) for i in df['authors']])      # Teamsize
