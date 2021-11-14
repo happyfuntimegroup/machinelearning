@@ -4,13 +4,13 @@ def team_size(df):
     Input:
         - df['authors']:    dataframe (dataset); 'authors' column       [pandas dataframe]
     Output:
-        - team_size:        vector of team_size for each paper of the given dataset         [pandas series]
+        - Team:             vector of team_size for each paper of the given dataset         [pandas series]
                             with team_size                                                  [int]
     """
     import pandas as pd
 
-    team_size = pd.Series([len(i) for i in df['authors']])      # Teamsize
+    Team = pd.Series([len(i) for i in df['authors']])      # Teamsize
 
-    return(team_size)                                           # Output
+    return(Team)                                           # Output
 
     
