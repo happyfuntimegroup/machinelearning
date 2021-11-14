@@ -20,8 +20,8 @@ We can update each other about current tasks that we came up with. Use strikethr
     - author productivity
 
 #### Melody:
-  -   Features:
-    -  Venue diversity
+  - Features:
+    - Venue diversity
 
 #### Regina:
   -   
