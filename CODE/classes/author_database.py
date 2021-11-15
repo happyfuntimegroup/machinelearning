@@ -3,23 +3,21 @@ def author_database(df):
     Builds a database of all authors in df based on each last name in 'authors'. 
     Here, by last name, we mean the last word that appears for each author name in the author column.
     Input:
-        - df['authors']:    dataframe (dataset); 'authors' column      [pandas dataframe]
+        - df:               dataframe (dataset); 
+                            can be only the 'authors' column            [pandas dataframe]
     Output:
-        - unique_authors:   list of unique authors in the dataset      [list]
+        - author_db:        list of unique authors in the dataset       [pandas dataframe]
     """
     import pandas as pd
     author_db  = {}
-    for i in df['authors']:
-        for j in i:
-            first_raw = j.split()[0]
-            last = j.split()[-1]
-            if first_raw != last:       # First name is mentioned
-                first = first_raw[0] + '. '
-            else:                       # No first name mentioned
-                first = 'X. '               # If not mentioned, default = X.
-            name = first + last         # Combine first letter and last name
+    for index, i_paper in df[0:10].iterrows():
+        authors = i_paper['authors']    # Group of authors of the paper
+        for i_author in authors:
+            name = author_name(i_author)
             if name not in author_db:
                 author_db[name] = 1     # Number of published papers = 1
             else:
                 author_db[name] += 1    # Add 1 to number of published papers
-    return pd.DataFrame.from_dict(author_db, orient = 'index')
+    author_db = pd.DataFrame.from_dict(author_db, orient = 'index')
+    author_db.columns = ['Total_papers_published']
+    return author_db
