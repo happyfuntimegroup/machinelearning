@@ -11,7 +11,7 @@ def author_database(df):
     import pandas as pd
     import author_name
     author_db  = {}
-    for index, i_paper in df[0:10].iterrows():
+    for index, i_paper in df.iterrows():
         authors = i_paper['authors']    # Group of authors of the paper
         for i_author in authors:
             name = author_name(i_author)
