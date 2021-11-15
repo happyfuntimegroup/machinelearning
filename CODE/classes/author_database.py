@@ -9,6 +9,7 @@ def author_database(df):
         - author_db:        list of unique authors in the dataset       [pandas dataframe]
     """
     import pandas as pd
+    import author_name
     author_db  = {}
     for index, i_paper in df[0:10].iterrows():
         authors = i_paper['authors']    # Group of authors of the paper
