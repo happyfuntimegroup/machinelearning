@@ -24,7 +24,7 @@ We can update each other about current tasks that we came up with. Use strikethr
 #### Melody:
   - Features:
     - Venue diversity (VenDiv)
-    - Come up with some model
+  - Come up with some model
 
 #### Regina:
   - EDA with Selin
