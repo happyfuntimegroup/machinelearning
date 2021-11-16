@@ -36,6 +36,7 @@ We can update each other about current tasks that we came up with. Use strikethr
 
 #### Selin:
  -   EDA (if that counts?)
+    - ~~Outlier function for numerical values~~
  -   Features:
     - Topic Diversity (TopDiv)
  -   Come up with some model 
