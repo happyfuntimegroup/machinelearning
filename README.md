@@ -28,6 +28,8 @@ We can update each other about current tasks that we came up with. Use strikethr
 #### Melody:
   - Features:
     - Venue diversity (VenDiv)
+    - Long term venue prestige (VenPresL) 
+    - Word Length Title
   - Come up with some model
 
 #### Regina:
