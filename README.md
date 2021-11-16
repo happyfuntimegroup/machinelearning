@@ -18,15 +18,20 @@ We can update each other about current tasks that we came up with. Use strikethr
   - Features:
     - ~~Team size (Team)~~
     - ~~Author productivity (ProAuth)~~
+    - Author H-index
+    - Come up with some model
 
 #### Melody:
   - Features:
     - Venue diversity (VenDiv)
+    - Come up with some model
 
 #### Regina:
-  -   
+  - EDA with Selin
+  - Come up with some model  
 
 #### Selin:
  -   EDA (if that counts?)
  -   Features:
-    - Topic Diversity (TopDiv) 
+    - Topic Diversity (TopDiv)
+ -   Come up with some model 
