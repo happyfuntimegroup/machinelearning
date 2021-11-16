@@ -3,6 +3,8 @@ def author_database(df):
     Builds a database of all authors in df based on each last name in 'authors'. 
     Here, by last name, we mean the last word that appears for each author name in the author column.
     Also returns df['Authors'] reformatted.
+        After calling this function, run df['authors'] = reformatted_authors.values 
+        to replace the lists in the author column with the reformatted lists.
     Input:
         - df:                   dataframe (dataset); 
                                 can be only the 'authors' column                [pandas dataframe]
