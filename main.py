@@ -1,6 +1,6 @@
-from CODE.classes.paper import Paper
+from CODE.classes.venue import Venue
+import split_val
 
-import sys
 
 if __name__ == '__main__':
-    Paper('DATA/train-1.json')
+

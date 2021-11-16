@@ -1,0 +1,12 @@
+from sklearn import tree
+import pandas as pd
+
+
+data = pd.read_json('DATA/train-1.json')
+
+
+# X, y = data['venue'], data['citations']
+
+# clf = tree.DecisionTreeClassifier()
+# clf = clf.fit(X, y)
+# tree.plot_tree(clf)

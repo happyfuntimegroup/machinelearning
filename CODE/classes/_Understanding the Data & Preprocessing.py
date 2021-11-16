@@ -1,15 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[7]:
-
-
 import pandas as pd
 import seaborn as sns #for EDA
 import numpy as np
-
-
-# In[9]:
 
 
 #Before having split it into train & validation
@@ -22,28 +13,13 @@ with open(r"C:\Users\SelinZ\OneDrive\Desktop\ML\train-1.json") as f:
 df = pd.DataFrame.from_dict(traind)
 df
 
-
-# In[27]:
-
-
 pd.DataFrame(df.items())
-
-
-# In[29]:
 
 
 df.dtypes
 
-
-# In[11]:
-
-
 #mean,std and max for references & citations
 df.describe()
-
-
-# In[12]:
-
 
 #missing values- How shall we deal with them? 
 
@@ -52,22 +28,10 @@ df.isnull().sum().sort_values(ascending= False)
 #year                 3
 #abstract           159
 
-
-# In[14]:
-
-
 sns.relplot(x= 'citations', y = 'references', data = df)
 sns.relplot(x= 'citations', y = 'references', data = df, hue = 'is_open_access')
 
-
-# In[15]:
-
-
 sns.relplot(x= 'citations', y = 'year', data = df)
-
-
-# In[30]:
-
 
 p_df = df.drop_duplicates('venue')
 p_df = p_df.sort_values('citations', ascending=False)
@@ -75,18 +39,10 @@ p_df = p_df.head(50)
 p_df.plot(x='authors', y='citations',
           kind='bar', figsize=(20, 5))
 
-
-# In[16]:
-
-
 print(df['venue'].value_counts())
 print(df['citations'].value_counts())
 print(df['fields_of_study'].value_counts())
 print(df['topics'].value_counts())
-
-
-# In[17]:
-
 
 #Assign X as a DataFrame of features and y as a Series of the outcome variable
 X = df.drop('citations', 1)
@@ -94,10 +50,6 @@ y = df.citations
 print(X.head(5))
 print("---------------")
 print(y.head(5))
-
-
-# In[18]:
-
 
 #https://www.youtube.com/watch?v=V0u6bxQOUJ8
 #models can only handle numeric features, so convert your features into numeric.
@@ -107,10 +59,6 @@ print(pd.get_dummies(X["is_open_access"]).head(5))
 
 #To be continued for the other features :')
 
-
-# In[20]:
-
-
 #from sklearn.impute import SimpleImputer
 #imp = SimpleImputer(missing_values=np.nan, strategy='mean')
 #imp.fit(X)
@@ -118,10 +66,6 @@ print(pd.get_dummies(X["is_open_access"]).head(5))
 
 #ValueError: Cannot use mean strategy with non-numeric data: could not convert string to float
 #Leaving this here just in case.
-
-
-# In[22]:
-
 
 #Outlier Detection
 def find_outliers_tukey(x):
@@ -135,16 +79,8 @@ def find_outliers_tukey(x):
     
     return outlier_indices, outlier_values
 
-
-# In[23]:
-
-
 tukey_indices, tukey_values = find_outliers_tukey(X['references'])
 print(np.sort(tukey_values))
-
-
-# In[ ]:
-
 
 #Decide which categorical variables you want to use in model
 for col_name in X.columns:
@@ -157,9 +93,6 @@ for col_name in X.columns:
 #Feature 'doi has 9657 unique categories
 #Feature 'title has 9645 unique categories
 #Feature 'abstract has 9492 unique categories
-
-
-# In[ ]:
 
 
 #Distribution of Features
@@ -178,10 +111,6 @@ def plot_histogram(x):
     
 plot_histogram(X['references'])
 
-
-# In[ ]:
-
-
 #Plot histograms to show distribution of features by DV categories.
 
 def plot_histogram_dv(x,y):
@@ -193,42 +122,9 @@ def plot_histogram_dv(x,y):
     plt.legend(loc = 'upper right')
     plt.show()
 
-
-# In[ ]:
-
-
 #distribution of reference numbers for when citation numbers are less than 100 and >= 100
 plot_histogram_dv(X['references'], y)
-
-
-# In[31]:
-
 
 from scipy.stats import pearsonr
 corr = pearsonr(df['references'].fillna(0), df['citations'].fillna(0))
 print("r={0}, p={1}".format(*corr))
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
