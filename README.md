@@ -19,7 +19,7 @@ We can update each other about current tasks that we came up with. Use strikethr
     - ~~Team size (Team)~~
     - ~~Author productivity (ProAuth)~~
     - Author H-index
-    - Come up with some model
+  - Come up with some model
 
 #### Melody:
   - Features:
