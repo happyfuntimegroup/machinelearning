@@ -6,6 +6,7 @@ def find_outliers_tukey(x):
     Output:
         - 
     """
+    import numpy as np
     q1 = np.percentile(x,25)
     q3 = np.percentile(x,75)
     iqr = q3-q1
