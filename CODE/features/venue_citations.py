@@ -6,6 +6,7 @@ def venues_citations(source_file):
     """
     papers = pd.read_json(source_file)
     venues = {}
+    citations = []
 
     for i in range(len(papers)):
         venue_temp = papers.iloc[i]['venue']

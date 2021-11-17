@@ -18,7 +18,7 @@ def length_title(source_file):
         title_list = title.split()
         dict_wordlength[title] = len(title_list)
         dict_citations[title] = papers.iloc[i]['citations']
-        dict_length_citations[len(title_list)] = papers.iloc[i]['citations']
+        dict_length_citations[title[0]] = 'citations: '+ str(papers.iloc[i]['citations']) + ' and word length: ' + str(len(title_list))
     
     # return dict_wordlength
     return dict_length_citations
