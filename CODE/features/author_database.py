@@ -3,8 +3,6 @@ def author_database(df):
     Builds a database of all authors in df based on each last name in 'authors'. 
     Here, by last name, we mean the last word that appears for each author name in the author column.
     Also returns df['Authors'] reformatted.
-        After calling this function, run df['authors'] = reformatted_authors.values 
-        to replace the lists in the author column with the reformatted lists.
     Input:
         - df:                   dataframe (dataset); 
                                 can be only the 'authors' column                [pandas dataframe]
@@ -14,7 +12,7 @@ def author_database(df):
                                 (with reformatted names)                        [list]
     """
     import pandas as pd
-    import author_name
+#   import author_name
     author_db  = {}
     reformatted_authors = []
     for index, i_paper in df.iterrows():
@@ -32,7 +30,9 @@ def author_database(df):
     # Turn output into pandas dataframe/series
     author_db = pd.DataFrame.from_dict(author_db, orient = 'index')
     author_db.columns = ['Total_papers_published']
+    author_db['Name'] = author_db.index
+    author_db.reset_index(drop = True, inplace = True)
     
     reformatted_authors = pd.Series(reformatted_authors)
     reformatted_authors.columns = ['Authors_reformatted']
-    return author_db, reformatted_authors
+    return author_db[['Name', 'Total_papers_published']], reformatted_authors
