@@ -1,0 +1,93 @@
+from sklearn import tree
+import pandas as pd
+from sklearn import tree
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split 
+
+class Decision_Tree()
+
+LabelEncoder()
+
+
+# data = pd.read_json('DATA/train-1.json')
+
+
+# X, y = data['venue'], data['citations']
+
+# clf = tree.DecisionTreeClassifier()
+# clf = clf.fit(X, y)
+# tree.plot_tree(clf)
+
+
+            
+
+        # print(dict(sorted(venues_count.items(), key=lambda item: item[1])))
+        # print(sum(venues_count.values()))
+        # print(len(venues_count.keys()))
+        # # print(venues_count)
+
+        #X_train, X_val, y_train, y_val
+
+        inputs = papers.drop('citations', axis='columns')
+        target = papers['citations']
+
+
+        le_venue = LabelEncoder()
+        le_topics = LabelEncoder()
+
+        inputs['venue_n'] = le_venue.fit_transform(inputs['venue'].astype(str))
+        # inputs['topics_n'] = le_topics.fit_transform(inputs['topics'].astype(str))
+        # inputs['topics_n'] = le_topics.fit_transform(inputs['topics'].astype(str))
+
+        inputs_n = inputs.drop(['doi', 'title', 'references', 'year', 'topics', 'venue', 'abstract', 'authors', 'fields_of_study', 'is_open_access'],axis='columns')
+
+        # print(inputs_n)
+        # print(target)
+
+
+        target_variable = 'citations'
+        val_size = 0.33
+        random = 42
+
+        X = inputs_n.loc[:, inputs_n.columns != target_variable]
+        # y = inputs_n.loc[:, inputs_n.columns == target_variable]
+        X_train, X_val, y_train, y_val = train_test_split(X, target, test_size = val_size, random_state = random)
+  
+        # print(inputs_n)
+        # print(X_train)
+        # print(y_train)
+        model = tree.DecisionTreeClassifier()
+        model = model.fit(X_train, y_train)
+ 
+        y_predict = model.predict(X_val)
+
+        import matplotlib.pyplot as plt
+
+        plt.scatter(y_predict, y_val)
+        plt.savefig('test.png')
+
+        from sklearn.metrics import r2_score
+
+        r2 = r2_score(y_val, y_predict)
+        print(r2)
+
+        # inputs_n = inputs.drop(['company','job','degree'],axis='columns')
+
+
+
+
+
+                # print(papers['venue', 'citations'])
+                
+        # X, y = papers['venue'], papers['citations']
+
+        # clf = tree.DecisionTreeClassifier()
+        # clf = clf.fit(X, y)
+        # tree.plot_tree(clf)
+            
+        
+        # print(papers['venue'].value_counts())
+        # pd.DataFrame.from_dict(venues)
+        # df = pd.DataFrame.from_dict(venues)
+        # print(df)
+        # print(venues)
