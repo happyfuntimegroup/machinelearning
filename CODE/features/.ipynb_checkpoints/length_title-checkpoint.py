@@ -29,6 +29,7 @@
 
 
 
+
 def length_title(source_file):
     """
     Slight modification to return a dictionary of lists so that we can grab the relevant number more easily
@@ -37,16 +38,15 @@ def length_title(source_file):
     """
     import pandas as pd
     papers = pd.read_json(source_file)
-    dict_wordlength = {}
-    dict_citations = {}
-    dict_length_citations = {}
-
+    dict_title_length = {}
+    
     for i in range(len(papers)):
         title = papers.iloc[i]['title']
+        doi = papers.iloc[i]['doi']
         title_list = title.split()
-        dict_wordlength[title] = len(title_list)
-        dict_citations[title] = papers.iloc[i]['citations']
-        dict_length_citations[title] = (len(title_list), papers.iloc[i]['citations'])
+
+        dict_title_length[doi] = (len(title_list))
     
     # return dict_wordlength
-    return dict_length_citations
+    return dict_title_length
+
