@@ -1,7 +1,7 @@
 import pandas as pd
 
-def venue_frequency(source_file):
-    papers = pd.read_json(source_file)
+def venue_frequency(data):
+    papers = data
     venues_count = {}
     count = 1
 

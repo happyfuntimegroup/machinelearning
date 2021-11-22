@@ -30,14 +30,13 @@
 
 
 
-def length_title(source_file):
+def length_title(data):
     """
     Slight modification to return a dictionary of lists so that we can grab the relevant number more easily
     key = title
     value = (length of title, number of citations)
     """
-    import pandas as pd
-    papers = pd.read_json(source_file)
+    papers = data
     dict_title_length = {}
     
     for i in range(len(papers)):
