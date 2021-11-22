@@ -61,10 +61,9 @@ def field_variety(df):
 
 
 
-def field_variety2(source_file, data):
+def field_variety2(data):
     """
-    Slight modification to return a dictionary of lists so that we can grab the relevant 
-    number more easily
+    Modification to return a dictionary of lists
     key = doi
     value = variety
     """
