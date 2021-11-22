@@ -43,10 +43,10 @@ def field_variety(df):
     """
     import pandas as pd
 
-   # Field_variety = pd.Series([len(i) for i in fields_filled])            # Variety of fields
-    Field_variety = pd.Series([len(i) for i in df['fields_of_study']])      # Variety of fields
+   # field_variety = pd.Series([len(i) for i in fields_filled])            # Variety of fields
+    field_variety = pd.Series([len(i) for i in df['fields_of_study']])      # Variety of fields
 
-    return(Field_variety)                                                  #Output
+    return(field_variety)                                                  #Output
 
 
 # In[10]:
@@ -58,3 +58,26 @@ def field_variety(df):
 #3      11
 #dtype: int64
 
+
+
+
+def field_variety2(source_file, data):
+    """
+    Slight modification to return a dictionary of lists so that we can grab the relevant 
+    number more easily
+    key = doi
+    value = variety
+    """
+    data = data
+    dict_field_var = {}
+    
+    for i in range(len(data)):
+        fields = data.iloc[i]['fields_of_study']
+        doi = data.iloc[i]['doi']
+        
+        if fields == None:  #inducing "None" as a category - this might be problematic?
+            fields = "None"
+        
+        dict_field_var[doi] = (len(fields))
+#    print(type(fields))
+    return dict_field_var
