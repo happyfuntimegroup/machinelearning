@@ -21,7 +21,12 @@ We can update each other about current tasks that we came up with. Use strikethr
     - ~~Author productivity (ProAuth)~~
       - Look at statistics
     - Author H-index
+      - ~~Citations per author function~~<br>
+        This function is hella time-consuming, so I left it out of the main file. Maybe I should figure out how to use parallelization on this. As of now, it does not get included in the main file.
       - Look at statistics
+    - ~~Age~~
+      - ~~Look at statistics~~
+    - Help out with making venue_citations and venue_frequency work in the main file.
   - Come up with some model
 
 
