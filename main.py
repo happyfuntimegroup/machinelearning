@@ -8,10 +8,10 @@ import numpy as np
 ### Import self-made functions
 from CODE.data_preprocessing.split_val import split_val
 from CODE.features.length_title import length_title
-from CODE.features.Field_variety import field_variety2
+from CODE.features.field_variety import field_variety2
 #from CODE.features.field_variety import field_variety
 from CODE.features.team_size import team_size
-from CODE.features.Topic_Variety import topics_variety
+from CODE.features.topic_variety import topics_variety
 from CODE.features.venue_frequency import venue_frequency
 from CODE.features.age import age
 
@@ -47,12 +47,8 @@ num_X['age'] = paper_age
 num_X['title_length'] = num_X['doi'].map(title_len)
 num_X['field_variety'] = num_X['doi'].map(field_var)
 
-
-
-"""
-INSERT trainv/val split here
-"""
-
+### trainv/val split
+X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 
 
 
