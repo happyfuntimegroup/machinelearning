@@ -18,7 +18,7 @@ from CODE.features.age import age
 ### Get the full train set:
 data = pd.read_json('DATA/train-1.json')   # Numerical columns: 'year', 'references', 'citations'
 
-### push the numerical columns to X and outcome to y
+### push the numerical columns to num_X
 end = len(data)
 num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]
 
@@ -47,14 +47,8 @@ num_X['age'] = paper_age
 num_X['title_length'] = num_X['doi'].map(title_len)
 num_X['field_variety'] = num_X['doi'].map(field_var)
 
-### trainv/val split
+### train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
-
-
-
-"""
-INSERT split X and y on the train here
-"""
 
 
 
