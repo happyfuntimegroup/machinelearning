@@ -17,10 +17,32 @@ from CODE.features.age import age
 
 ### Get the full train set:
 data = pd.read_json('DATA/train-1.json')   # Numerical columns: 'year', 'references', 'citations'
+test = pd.read_json('DATA/test.json')
+
+
+"""
+DEAL with missing values in "data" and "test" here - SELIN
+
+doi --> ""
+title --> ""
+abstract --> "" 
+authors --> [""]
+venue --> ""
+year --> mean of venue based on "data" ELSE from "data"
+references --> 0  --think about this!
+topic --> [""]
+is_open-access --> base on venue ELSE from "data"
+fields_of_study --> [""]
+citations --> assume not blank
+
+"""
+
 
 ### push the numerical columns to num_X
 end = len(data)
-num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]
+num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
+
+
 
 
 """
@@ -53,6 +75,15 @@ X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 
 
 
+
 """
-IMPLEMENT model fuctions here
+INSERT outlier detection on X_train here - ALBERT
+"""
+
+
+
+
+"""
+IMPLEMENT regression models fuctions here
+- exponential
 """
