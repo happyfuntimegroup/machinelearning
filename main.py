@@ -15,6 +15,9 @@ from CODE.features.topic_variety import topics_variety
 from CODE.features.venue_frequency import venue_frequency
 from CODE.features.age import age
 
+from CODE.features.abst_words import abst_words
+
+
 ### Get the full train set:
 data = pd.read_json('DATA/train-1.json')   # Numerical columns: 'year', 'references', 'citations'
 test = pd.read_json('DATA/test.json')
@@ -59,11 +62,20 @@ team_sz = team_size(data)           # returns a numbered series
 topic_var = topics_variety(data)    # returns a numbered series
 venue_freq = venue_frequency(data)  # returns a dictionary: [venue](count)
 paper_age = age(data)                     # returns a numbered series
+open_access = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
+
+keywords = ["method", "review", "randomized", "random control", "cancer"]
+abst_keywords = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+
 
 ### join the variables (type = series) to num_X 
 num_X['team_size'] = team_sz
 num_X['topic_variety'] = topic_var
 num_X['age'] = paper_age
+num_X['open_access'] = open_access
+
+num_X['has_keyword'] = abst_keywords
+
 
 ### join the variables (type = dictionary) to num_X
 num_X['title_length'] = num_X['doi'].map(title_len)
