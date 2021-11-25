@@ -8,19 +8,44 @@ import numpy as np
 ### Import self-made functions
 from CODE.data_preprocessing.split_val import split_val
 from CODE.features.length_title import length_title
-from CODE.features.Field_variety import field_variety2
+from CODE.features.field_variety import field_variety2
 #from CODE.features.field_variety import field_variety
 from CODE.features.team_size import team_size
-from CODE.features.Topic_Variety import topics_variety
+from CODE.features.topic_variety import topics_variety
 from CODE.features.venue_frequency import venue_frequency
 from CODE.features.age import age
 
+from CODE.features.abst_words import abst_words
+
+
 ### Get the full train set:
 data = pd.read_json('DATA/train-1.json')   # Numerical columns: 'year', 'references', 'citations'
+test = pd.read_json('DATA/test.json')
 
-### push the numerical columns to X and outcome to y
+
+"""
+DEAL with missing values in "data" and "test" here - SELIN
+
+doi --> ""
+title --> ""
+abstract --> "" 
+authors --> [""]
+venue --> ""
+year --> mean of venue based on "data" ELSE from "data"
+references --> 0  --think about this!
+topic --> [""]
+is_open-access --> base on venue ELSE from "data"
+fields_of_study --> [""]
+citations --> assume not blank
+
+"""
+
+
+### push the numerical columns to num_X
 end = len(data)
-num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]
+num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
+
+
 
 
 """
@@ -37,32 +62,40 @@ team_sz = team_size(data)           # returns a numbered series
 topic_var = topics_variety(data)    # returns a numbered series
 venue_freq = venue_frequency(data)  # returns a dictionary: [venue](count)
 paper_age = age(data)                     # returns a numbered series
+open_access = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
+
+keywords = ["method", "review", "randomized", "random control", "cancer"]
+abst_keywords = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+
 
 ### join the variables (type = series) to num_X 
 num_X['team_size'] = team_sz
 num_X['topic_variety'] = topic_var
 num_X['age'] = paper_age
+num_X['open_access'] = open_access
+
+num_X['has_keyword'] = abst_keywords
+
 
 ### join the variables (type = dictionary) to num_X
 num_X['title_length'] = num_X['doi'].map(title_len)
 num_X['field_variety'] = num_X['doi'].map(field_var)
 
+### train/val split
+X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 
-
-"""
-INSERT trainv/val split here
-"""
 
 
 
 
 """
-INSERT split X and y on the train here
+INSERT outlier detection on X_train here - ALBERT
 """
 
 
 
 
 """
-IMPLEMENT model fuctions here
+IMPLEMENT regression models fuctions here
+- exponential
 """
