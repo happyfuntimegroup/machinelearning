@@ -17,7 +17,7 @@ def abst_words (the_data, keywords):
         else:
             flag = 0
             for word in keywords:
-                if word in i:
+                if word in i.lower():
                     flag = 1
             abst_key.append(flag)
     return pd.Series(abst_key)

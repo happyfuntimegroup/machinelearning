@@ -20,7 +20,6 @@ from CODE.features.venue_frequency import venue_frequency
 from CODE.features.age import age
 #from CODE.features.author_database import author_database
 #from CODE.features.author_name import author_name
-
 from CODE.features.abst_words import abst_words
 
 ### Get the full train set:
@@ -61,6 +60,9 @@ This is the dataframe we will use to train the models.
 """
 
 ### use feature function to create a new variable
+"""
+DO NOT change the order in this section if at all possible
+"""
 title_len = length_title(data)      # returns: dictionary of lists: [doi](count)
 field_var = field_variety2(data)    # returns: dictionary of lists: [doi](count)
 team_sz = team_size(data)           # returns a numbered series
@@ -70,9 +72,11 @@ num_X['venue'] = venues_reformatted # Dataframe needs a venue to deal with missi
 paper_age = age(data)               # returns a numbered series
 open_access = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 
-keywords = ["method", "review", "randomized", "random control", "cancer"]
+keywords = ["method", "review", "randomized", "random control"]
 abst_keywords = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
-
+"""
+END do not reorder
+"""
 
 
 ### join the variables (type = series) to num_X 
@@ -114,3 +118,4 @@ INSERT outlier detection on X_train here - ALBERT
 IMPLEMENT regression models fuctions here
 - exponential
 """
+
