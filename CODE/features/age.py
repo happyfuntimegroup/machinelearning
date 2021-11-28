@@ -20,7 +20,7 @@ def age(df):
     for index, venue in no_year_venues:
         venue_year = mean_year.loc[venue]['year']
         df.loc[index, 'year'] = venue_year
-        
+
     # Publishing year
     publishing_year = df['year']
 
