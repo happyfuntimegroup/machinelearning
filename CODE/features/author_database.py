@@ -12,7 +12,8 @@ def author_database(df):
                                 (with reformatted names)                        [list]
     """
     import pandas as pd
-    import author_name
+    from CODE.features.author_name import author_name
+    
     author_db  = {}
     reformatted_authors = []
     for index, i_paper in df.iterrows():
