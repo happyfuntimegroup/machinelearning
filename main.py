@@ -180,15 +180,20 @@ INSERT outlier detection on X_train here - ALBERT
 
 # print(list(X_train.columns))
 
-# out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[1]
-# out_X = (find_outliers_tukey(x = X_train['references'], top = 85, bottom = 0))[1]
+# out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
+# out_X = (find_outliers_tukey(x = X_train['team_size'], top = 99, bottom = 0))[0]
 # out_rows = out_y + out_X
 # out_rows = sorted(list(set(out_rows)))
 
-# print("y:", out_y)
-# print("X:", out_X)
-# print("rows:", out_rows)
-
+# print("X_train:")
+# print(X_train.shape)
+# X_train = X_train.drop(labels = out_rows)
+# print(X_train.shape)
+# print()
+# print("y_train:")
+# print(y_train.shape)
+# y_train = y_train.drop(labels = out_rows)
+# print(y_train.shape)
 
 """
 IMPLEMENT regression models fuctions here
