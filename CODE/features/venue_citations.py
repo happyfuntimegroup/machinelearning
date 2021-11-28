@@ -1,6 +1,6 @@
 import pandas as pd
 
-def venues_citations(data, venue_db):
+def venues_citations(data):
     """Output: 
     {Venue : [list of citations per paper]
     """
@@ -12,7 +12,7 @@ def venues_citations(data, venue_db):
     
     for index, i_paper in data.iterrows():
         venue = i_paper['venue']
-    
+
         if venue in venues.keys():
             citations = venues[venue]
             citations.append(i_paper['citations'])
