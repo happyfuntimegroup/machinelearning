@@ -22,12 +22,13 @@ We can update each other about current tasks that we came up with. Use strikethr
       - Look at statistics
     - Author H-index
       - ~~Citations per author function~~<br>
-        This function is hella time-consuming, so I left it out of the main file. Maybe I should figure out how to use parallelization on this. As of now, it does not get included in the main file.
+        ~~This function is hella time-consuming, so I left it out of the main file. Maybe I should figure out how to use parallelization on this. As of now, it does not get included in the main file.~~
+          - ~~Solution: run it once -> save as extra 'author-centric' datasets -> remove code to run author-centric functions & implement code to load author-centric dataset~~
       - Look at statistics
     - ~~Age~~
       - ~~Look at statistics~~
-    - Help out with making venue_citations and venue_frequency work in the main file.
-  - Come up with some model
+    - ~~Help out with making venue_citations and venue_frequency work in the main file.~~
+  - ~~Come up with some model~~
 
 
 #### Melody:
@@ -35,10 +36,13 @@ We can update each other about current tasks that we came up with. Use strikethr
     - Venue diversity (VenDiv)
     - Long term venue prestige (VenPresL) 
     - Word Length Title
+    - ~~Topic popularity~~
+    - Field variety
   - Come up with some model
 
 #### Regina:
   - EDA with Selin
+  - ~~Add option for 'strictness' to outlier function~~
   - Come up with some model  
 
 #### Selin:
