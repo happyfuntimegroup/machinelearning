@@ -112,8 +112,19 @@ X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 """
 INSERT outlier detection on X_train here - ALBERT
 """
+### MODEL code for outlier detection
+### names: X_train, X_val, y_train, y_val
 
+# print(list(X_train.columns))
 
+# out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[1]
+# out_X = (find_outliers_tukey(x = X_train['references'], top = 85, bottom = 0))[1]
+# out_rows = out_y + out_X
+# out_rows = sorted(list(set(out_rows)))
+
+# print("y:", out_y)
+# print("X:", out_X)
+# print("rows:", out_rows)
 
 
 """
