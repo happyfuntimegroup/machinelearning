@@ -17,6 +17,7 @@ from CODE.features.field_variety import field_variety2
 from CODE.features.team_size import team_size
 from CODE.features.topic_variety import topics_variety
 from CODE.features.venue_frequency import venue_frequency
+from CODE.features.venue_citations import venues_citations
 from CODE.features.age import age
 #from CODE.features.author_database import author_database
 #from CODE.features.author_name import author_name
@@ -69,9 +70,9 @@ team_sz = team_size(data)           # returns a numbered series
 topic_var = topics_variety(data)    # returns a numbered series
 venue_db, venues_reformatted = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
 num_X['venue'] = venues_reformatted # Dataframe needs a venue to deal with missing values
-paper_age = age(data)               # returns a numbered series
 open_access = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
-
+paper_age = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
+venPresL = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 keywords = ["method", "review", "randomized", "random control"]
 abst_keywords = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
 """
@@ -86,6 +87,7 @@ num_X['age'] = paper_age
 num_X['open_access'] = open_access
 num_X['has_keyword'] = abst_keywords
 num_X['venue'] = venues_reformatted
+num_X['venPresL'] = venPresL
 
 ### join the variables (type = dictionary) to num_X
 num_X['title_length'] = num_X['doi'].map(title_len)
