@@ -1,4 +1,4 @@
-# def length_title(source_file):
+ # def length_title(source_file):
 #     """
 #     This function is based on an online published article:
 #         https://www.natureindex.com/news-blog/five-features-highly-cited-scientific-article
@@ -24,10 +24,7 @@
 #     return dict_length_citations
 
 
-
 #    print(length_title('DATA/train-1.json'))
-
-
 
 
 def length_title(data):
