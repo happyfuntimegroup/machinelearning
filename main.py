@@ -39,7 +39,7 @@ dict_authors = {}
 dict_venue = {}
 dict_year = {}
 dict_references = {}
-dict_topic = {}
+dict_topics = {}
 dict_access = {}
 dict_citations = {} #delete this for test data
 
@@ -52,7 +52,7 @@ for i in range(len(data)):
     venue = data.iloc[i]['venue']
     year = data.iloc[i]['year']
     references = data.iloc[i]['references']
-    topic = data.iloc[i]['topic']
+    topics = data.iloc[i]['topics']
     access = data.iloc[i]['is_open_access']
     citations = data.iloc[i]['citations'] #delete for test data
         
@@ -79,9 +79,9 @@ for i in range(len(data)):
     if references == None:
         references = mean(references) # references = 999
     dict_references[doi] = (len(references))
-    if topic == None:
-        topic = "None" #topic = title
-    dict_topic[doi] = (len(references))
+    if topics == None:
+        topics = "None" #topic = title
+    dict_topics[doi] = (len(references))
     if access == None:
         access = "None"   #based on venue?
     dict_access[doi] = (len(access))
