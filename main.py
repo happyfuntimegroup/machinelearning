@@ -89,7 +89,7 @@ num_X['field_variety'] = num_X['doi'].map(field_var)
 
 
 # Check venue and add venue_frequency to each paper
-venue_freq = pd.Series()
+venue_freq = pd.Series(dtype=pd.Int64Dtype())
 for index, i_paper in num_X.iterrows():
     venue_freq[index,] = venue_db[i_paper['venue']] 
 num_X['venue_freq'] = venue_freq
