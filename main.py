@@ -180,10 +180,15 @@ INSERT outlier detection on X_train here - ALBERT
 
 # out_rows = sorted(list(set(out_rows)))
 
+# print("X_train:")
 # print(X_train.shape)
 # X_train = X_train.drop(labels = out_rows)
 # print(X_train.shape)
-
+# print()
+# print("y_train:")
+# print(y_train.shape)
+# y_train = y_train.drop(labels = out_rows)
+# print(y_train.shape)
 
 """
 IMPLEMENT regression models fuctions here
