@@ -29,7 +29,7 @@ test = pd.read_json('DATA/test.json')
 
 
 """
-DEAL with missing values in "data" and "test" here - SELIN
+###DEAL with missing values in "data" and "test" here 
 
 data = data   #data = test for test data
 dict_field_var = {}
@@ -103,8 +103,6 @@ return dict_citations #delete for test data
 
 
 """
-
-
 ### push the numerical columns to num_X
 end = len(data)
 num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
