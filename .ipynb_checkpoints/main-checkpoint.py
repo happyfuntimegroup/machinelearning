@@ -23,9 +23,15 @@ from CODE.features.age import age
 #from CODE.features.author_name import author_name
 from CODE.features.abst_words import abst_words
 
-### Get the full train set:
+### Load all datasets:
 data = pd.read_json('DATA/train-1.json')   # Numerical columns: 'year', 'references', 'citations'
 test = pd.read_json('DATA/test.json')
+
+import pickle
+with open('my_dataset1.pickle', 'rb') as data:
+    author_citation_dic = pickle.load(data)
+with open('my_dataset2.pickle', 'rb') as data:
+    author_db = pickle.load(data)
 
 
 """
@@ -175,15 +181,19 @@ INSERT outlier detection on X_train here - ALBERT
 # print(list(X_train.columns))
 
 # out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
-# out_X = (find_outliers_tukey(x = X_train['references'], top = 85, bottom = 0))[0]
+# out_X = (find_outliers_tukey(x = X_train['team_size'], top = 99, bottom = 0))[0]
 # out_rows = out_y + out_X
-
 # out_rows = sorted(list(set(out_rows)))
 
+# print("X_train:")
 # print(X_train.shape)
 # X_train = X_train.drop(labels = out_rows)
 # print(X_train.shape)
-
+# print()
+# print("y_train:")
+# print(y_train.shape)
+# y_train = y_train.drop(labels = out_rows)
+# print(y_train.shape)
 
 """
 IMPLEMENT regression models fuctions here
