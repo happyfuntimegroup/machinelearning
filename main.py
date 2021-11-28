@@ -102,7 +102,7 @@ return dict_citations #delete for test data
 """
 
 
-"""
+
 ### push the numerical columns to num_X
 end = len(data)
 num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
