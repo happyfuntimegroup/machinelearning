@@ -11,7 +11,7 @@ def citations_per_author(df, author_db):
     """
     import numpy as np
     import pandas as pd
-    #author_db['citations'] = 0
+    author_db['citations'] = 0
     dic = {}
     for i, i_paper in df.iterrows():
         group = i_paper['authors']
@@ -21,6 +21,6 @@ def citations_per_author(df, author_db):
             index = author_db[condition].index[0]
             if i_author not in dic:
                 dic[i_author] = []
-            #author_db.loc[index, 'citations'] += citations
+            author_db.loc[index, 'citations'] += citations
             dic[i_author].append(citations)
-    return dic #author_db['citations']
+    return dic, author_db['citations']
