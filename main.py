@@ -28,10 +28,10 @@ data = pd.read_json('DATA/train.json')   # Numerical columns: 'year', 'reference
 test = pd.read_json('DATA/test.json')
 
 import pickle
-with open('my_dataset1.pickle', 'rb') as data:
-    author_citation_dic = pickle.load(data)
-with open('my_dataset2.pickle', 'rb') as data:
-    author_db = pickle.load(data)
+with open('my_dataset1.pickle', 'rb') as dataset:
+    author_citation_dic = pickle.load(dataset)
+with open('my_dataset2.pickle', 'rb') as dataset:
+    author_db = pickle.load(dataset)
 
 
 """
@@ -184,7 +184,7 @@ This is the dataframe we will use to train the models.
 DO NOT change the order in this section if at all possible
 """
 title_len = length_title(data)      # returns: dictionary of lists: [doi](count)
-field_var = field_variety2(data)    # returns: dictionary of lists: [doi](count)
+#field_var = field_variety2(data)    # returns: dictionary of lists: [doi](count)
 team_sz = team_size(data)           # returns a numbered series
 topic_var = topics_variety(data)    # returns a numbered series
 venue_db, venues_reformatted = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
@@ -210,7 +210,7 @@ num_X['venPresL'] = venPresL
 
 ### join the variables (type = dictionary) to num_X
 num_X['title_length'] = num_X['doi'].map(title_len)
-num_X['field_variety'] = num_X['doi'].map(field_var)
+#num_X['field_variety'] = num_X['doi'].map(field_var)
 
 
 # Check venue and add venue_frequency to each paper
