@@ -37,74 +37,130 @@ with open('my_dataset2.pickle', 'rb') as data:
 """
 ###DEAL with missing values in "data" and "test" here 
 
-data = data   #data = test for test data
-dict_field_var = {}
-dict_title = {}
-dict_abstract = {}
-dict_authors = {}
-dict_venue = {}
-dict_year = {}
-dict_references = {}
-dict_topics = {}
-dict_access = {}
-dict_citations = {} #delete this for test data
+data = data  
 
+#dict_field_num = {}
+dict_fields = {}
 for i in range(len(data)):
     doi = data.iloc[i]['doi'] 
-    fields = data.iloc[i]['fields_of_study']
+    fields = data.iloc[i]['fields_of_study'] 
+    if fields == None:   
+        fields = ""   #when we put "None" here, counts its characters and gives 4 for an empty value instead of 0
+    #dict_field_num[doi] = len(fields) #double check field_variety2 function and the need for a function like that
+    dict_fields[doi] = fields  
+#dict_field_num.values() 
+#dict_fields.values() 
+
+
+dict_title = {}
+#dict_length_title = {}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
     title = data.iloc[i]['title']
-    abstract = data.iloc[i]['abstract']
-    authors = data.iloc[i]['authors']
-    venue = data.iloc[i]['venue']
-    year = data.iloc[i]['year']
-    references = data.iloc[i]['references']
-    topics = data.iloc[i]['topics']
-    access = data.iloc[i]['is_open_access']
-    citations = data.iloc[i]['citations'] #delete for test data
-        
-#   if doi == None:
-#       doi = i
-    if fields == None:    #Filling the categorical value with a new type for the missing values.
-        fields = "None"    
-    dict_field_var[doi] = (len(fields))
     if title == None: 
-       title = "None"
-    dict_title[doi] = (len(title))
-    if abstract == None:
-        abstract = "None" # abstract = title
-    dict_abstract[doi] = (len(fields))
-    if authors == None:
-        authors = "None"
-    dict_authors[doi] = (len(authors))
-    if venue == None:          #Filling the missing data with mode if it’s a categorical value?
-        venue = "None"
-    dict_venue[doi] = (len(venue))
-    if year == None:
-        year = mean(year)   #mean of year based on "data" 
-    dict_year[doi] = (len(year))
-    if references == None:
-        references = mean(references) # references = 999
-    dict_references[doi] = (len(references))
-    if topics == None:
-        topics = "None" #topic = title
-    dict_topics[doi] = (len(references))
-    if access == None:
-        access = "None"   #based on venue?
-    dict_access[doi] = (len(access))
-    if citations == None:           #delete for test data
-        citations = "None"
-    dic_citations[doi] =(len(citations))    
+        title = ""
+    dict_title[doi] = (title)
+   # dict_length_title[doi] = len(title)
     
-return dict_field_var 
-return dict_title 
-return dict_abstract 
-return dict_authors 
-return dict_venue
-return dict_year 
-return dict_references
-return dict_topic 
-return dict_access
-return dict_citations #delete for test data
+#dict_title.values() 
+#dict_length_title.values()
+
+
+dict_abstract = {}
+#dict_length_abstract = {}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
+    abstract = data.iloc[i]['abstract']
+    if abstract == None:
+        abstract = "" # abstract = title?
+    dict_abstract[doi] = (abstract)
+ #   dict_length_abstract[doi] = len(abstract)
+    
+#dict_abstract.values() 
+#dict_length_abstract.values()
+
+dict_authors = {}
+#dict_author_num = {}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
+    authors = data.iloc[i]['authors']
+    if authors == None:
+        authors = ""
+    dict_authors[doi] = (authors)
+ #   dict_author_num[doi] = len(authors)
+    
+#dict_authors.values() 
+#dict_author_num.values()
+
+
+dict_venues = {}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
+    venue = data.iloc[i]['venue']
+    if venue == None:
+        venue = ""
+    dict_venues[doi] = (venue)
+    
+#dict_venues.values() 
+
+
+dict_year = {}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
+    year = data.iloc[i]['year'] #change it based on venue?
+    if year == None:
+        year = mean(year)
+    dict_year[doi] = (year)
+    
+#dict_year.values() 
+
+
+dict_references = {}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
+    references = data.iloc[i]['references']
+    if references == None:      
+        references = ""     #999?
+    dict_references[doi] = (references)
+    
+#dict_references.values()
+
+
+dict_topics = {}
+#dict_topics_num ={}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
+    topics = data.iloc[i]['topics']
+    if topics == None:
+        topics = [""]         #topic = title?
+    dict_topics[doi] = (topics)
+ #   dict_topics_num[doi] = len(topics)
+    
+#dict_topics.values() 
+#dict_topics_num.values()
+
+
+dict_access = {}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
+    access = data.iloc[i]['is_open_access']
+    if access == None:
+        access = "" 
+    dict_access[doi] = (access)
+    
+#dict_access.values() 
+
+
+dict_citations = {}
+for i in range(len(data)):
+    doi = data.iloc[i]['doi'] 
+    citations = data.iloc[i]['citations']
+    if citations == None:
+        citations = 9999 
+    dict_citations[doi] = (citations)
+    
+#dict_citations.values()        
+        
 """
 
 
