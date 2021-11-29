@@ -30,8 +30,8 @@ test = pd.read_json('DATA/test.json')
 import pickle
 with open('my_dataset1.pickle', 'rb') as dataset:
     author_citation_dic = pickle.load(dataset)
-with open('my_dataset2.pickle', 'rb') as dataset:
-    author_db = pickle.load(dataset)
+with open('my_dataset2.pickle', 'rb') as dataset2:
+    author_db = pickle.load(dataset2)
 
 
 """
