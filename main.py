@@ -192,9 +192,11 @@ paper_age = age(data)               # returns a numbered series. Needs to be cal
 venPresL = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 keywords = ["method", "review", "randomized", "random control"]
 abst_keywords = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+
+# Author centric
 author_db, reformatted_authors = author_database(data)
 data['authors'] = reformatted_authors
-data['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
+num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
 
 """
 END do not reorder
