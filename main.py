@@ -181,7 +181,7 @@ This is the dataframe we will use to train the models.
 """
 DO NOT change the order in this section if at all possible
 """
-title_len = length_title(data)      # returns: dictionary of lists: [doi](count)
+title_len = length_title(data)      # returns a numbered series
 #field_var = field_variety2(data)    # returns: dictionary of lists: [doi](count)
 team_sz = team_size(data)           # returns a numbered series
 topic_var = topics_variety(data)    # returns a numbered series

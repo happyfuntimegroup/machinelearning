@@ -1,26 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[3]:
-
-
-#import pandas as pd
-
-
-# In[4]:
-
-
-#import json
-
-#with open(r"C:\Users\SelinZ\OneDrive\Desktop\ML\train-1.json") as f:
- #   traind = json.load(f)
-
-#df = pd.DataFrame.from_dict(traind)
-
-
-# In[12]:
-
-
 #The number of different topics that a certain article is about 
 
 def topics_variety(df):
