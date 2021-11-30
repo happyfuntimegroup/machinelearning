@@ -1,5 +1,4 @@
 import pandas as pd
-import math
 
 #The number of different fields that a certain article is about > 1 or 2 or 3 
 
@@ -13,8 +12,7 @@ def field_variety(data):
                                     with field_variety                                                   [int]
     """
     
-   # field_variety = pd.Series([len(i) for i in fields_filled])            # Variety of fields
-    # field_variety = pd.Series([len(i) for i in data['fields_of_study']])      # Variety of fields
+    Field_variety = pd.Series([len(i) for i in data['fields_of_study']])      # Variety of fields
 
     field_popularity_dict = {}
     fields_dict = {}
@@ -40,22 +38,8 @@ def field_variety(data):
                 fields_dict[field] = sum(citations) / len(citations)
             else:
                 fields_dict[field] = citation
-    
 
-    y = data['citations']
-    correlaties = data.corr()
-    sns.heatmap(correlaties)
-    plt.savefig('test.png')
-    # print(fields_dict)
-
-        
-        # df_fields['Index'] = index
-        # # df_fields['Fields'] = fields
-        # df_fields['Field Variety'] = field_variety
-        # df_fields['Popularity'] = 
-
-        # print(df_fields)
-
+        return Field_variety, field_popularity_dict
         
 
 
