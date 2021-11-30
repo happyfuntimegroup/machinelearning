@@ -34,7 +34,6 @@ with open('my_dataset2.pickle', 'rb') as dataset2:
     author_db = pickle.load(dataset2)
 
 
-"""
 ###DEAL with missing values in "data" and "test" here 
 
 data = data  
@@ -160,8 +159,7 @@ for i in range(len(data)):
     dict_citations[doi] = (citations)
     
 #dict_citations.values()        
-        
-"""
+
 
 
 
