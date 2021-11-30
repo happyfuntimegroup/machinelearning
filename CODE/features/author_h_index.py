@@ -1,4 +1,4 @@
-def author_h_index(data, author_citation_dic):
+def author_h_index(author_citation_dic):
     """
     
     """
