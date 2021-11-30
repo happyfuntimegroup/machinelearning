@@ -150,13 +150,13 @@ for i in range(len(data)):
 #dict_access.values() 
 
 
-dict_citations = {}
-for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
-    citations = data.iloc[i]['citations']
-    if citations == None:
-        citations = 9999 
-    dict_citations[doi] = (citations)
+#dict_citations = {}
+#for i in range(len(data)):
+#    doi = data.iloc[i]['doi'] 
+#    citations = data.iloc[i]['citations']
+#    if citations == None:
+#        citations = 9999 
+#    dict_citations[doi] = (citations)
     
 #dict_citations.values()        
 
