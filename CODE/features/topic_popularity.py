@@ -2,7 +2,14 @@ from numpy.lib.function_base import average
 import pandas as pd
 
 def topic_popularity(data):
-    """ returns dictionary key = topic, value = average citions for that topic """
+    """
+    Computes the avarage citations for each topic
+    Input:
+        - df['topics']:    dataframe (dataset); 'topics' column                   [pandas dataframe]
+    Output:
+        - Avarage citations:                                                            [int]
+    """
+   
 
     topic_popularity_dict = {}
     citations = []

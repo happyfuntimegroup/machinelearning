@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 
 #The number of different fields that a certain article is about > 1 or 2 or 3 
 
@@ -15,29 +16,37 @@ def field_variety(data):
    # field_variety = pd.Series([len(i) for i in fields_filled])            # Variety of fields
     # field_variety = pd.Series([len(i) for i in data['fields_of_study']])      # Variety of fields
 
-    field_variety = 0
     field_popularity_dict = {}
+    fields_dict = {}
 
-    # Support: Fraction of transactions that contain an itemset.
-    # support(field) = number of papers with that field / total number of papers 
-
-    # Confidence: Measures how often items in Y appear in transactions that contain X
 
     for index, i_paper in data.iterrows():
+        citations = []
 
         fields = i_paper['fields_of_study']
         if fields == None:
             fields = ['Missing']
 
-        field_variety = len(fields)
+        citation = i_paper['citations']
 
         for field in fields:
             if field in field_popularity_dict.keys():
                 field_popularity_dict[field] += 1
             else:
                 field_popularity_dict[field] = 1
+            
+            if field in fields_dict.keys():
+                citations.append(citation)
+                fields_dict[field] = sum(citations) / len(citations)
+            else:
+                fields_dict[field] = citation
     
-    print(field_popularity_dict)
+
+    y = data['citations']
+    correlaties = data.corr()
+    sns.heatmap(correlaties)
+    plt.savefig('test.png')
+    # print(fields_dict)
 
         
         # df_fields['Index'] = index

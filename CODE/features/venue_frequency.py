@@ -8,7 +8,7 @@ def venue_frequency(data):
     venue_reformatted = pd.Series()
     
     for index, i_paper in data.iterrows():
-        venue_temp = papers.iloc[index]['venue']
+        venue_temp = i_paper['venue']
         venue = ''
 
         for char in venue_temp:
