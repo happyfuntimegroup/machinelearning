@@ -5,8 +5,6 @@ SETUP
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-import scipy
 
 ### Import self-made functions
 from CODE.data_preprocessing.split_val import split_val
@@ -19,9 +17,11 @@ from CODE.features.topic_variety import topics_variety
 from CODE.features.venue_frequency import venue_frequency
 from CODE.features.venue_citations import venues_citations
 from CODE.features.age import age
-#from CODE.features.author_database import author_database
+from CODE.features.author_database import author_database
 #from CODE.features.author_name import author_name
 from CODE.features.abst_words import abst_words
+from CODE.features.author_h_index import author_h_index
+from CODE.features.paper_h_index import paper_h_index
 
 ### Load all datasets:
 data = pd.read_json('DATA/train.json')   # Numerical columns: 'year', 'references', 'citations'
@@ -58,7 +58,7 @@ for i in range(len(data)):
     title = data.iloc[i]['title']
     if title == None: 
         title = ""
-    dict_title[doi] = (title)
+    dict_title[doi] = title
    # dict_length_title[doi] = len(title)
     
 #dict_title.values() 
@@ -150,13 +150,13 @@ for i in range(len(data)):
 #dict_access.values() 
 
 
-dict_citations = {}
-for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
-    citations = data.iloc[i]['citations']
-    if citations == None:
-        citations = 9999 
-    dict_citations[doi] = (citations)
+#dict_citations = {}
+#for i in range(len(data)):
+#    doi = data.iloc[i]['doi'] 
+#    citations = data.iloc[i]['citations']
+#    if citations == None:
+#        citations = 9999 
+#    dict_citations[doi] = (citations)
     
 #dict_citations.values()        
 
@@ -192,6 +192,12 @@ paper_age = age(data)               # returns a numbered series. Needs to be cal
 venPresL = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 keywords = ["method", "review", "randomized", "random control"]
 abst_keywords = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+
+# Author centric
+author_db, reformatted_authors = author_database(data)
+data['authors'] = reformatted_authors
+num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
+
 """
 END do not reorder
 """
