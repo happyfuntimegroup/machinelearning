@@ -16,11 +16,8 @@ import matplotlib.pyplot as plt
 from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
 from CODE.features.length_title import length_title
-<<<<<<< HEAD
-#from CODE.features.field_variety import field_variety         # Not working anymore?
-=======
+from CODE.features.field_variety import field_variety         # Not working anymore?
 from CODE.features.field_variety import field_variety         
->>>>>>> e3536806341ec671f1e8fb11d434fda2449fe15d
 from CODE.features.team_size import team_size
 from CODE.features.topic_variety import topics_variety
 from CODE.features.venue_frequency import venue_frequency
@@ -55,19 +52,19 @@ with open('my_dataset2.pickle', 'rb') as dataset2:
 ##########################################
 
 # Missing values for feature 'fields_of_study'
-data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = "Missing"
+data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = ""
 
 # Missing values for feature 'title'
-data.loc[data['title'].isnull(), 'title'] = "Missing"
+data.loc[data['title'].isnull(), 'title'] = ""
 
 # Missing values for feature 'abstract'
-data.loc[data['abstract'].isnull(), 'abstract'] = "Missing"
+data.loc[data['abstract'].isnull(), 'abstract'] = ""
     
 # Missing values for features 'authors'
-data.loc[data['authors'].isnull(), 'authors'] = "Missing"
+data.loc[data['authors'].isnull(), 'authors'] = ""
 
 # Missing values for feature 'venue'
-data.loc[data['venue'].isnull(), 'venue'] = "Missing"
+data.loc[data['venue'].isnull(), 'venue'] = ""
     
 # Missing values for feature 'year'
 # data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = mean(year) 
@@ -75,13 +72,13 @@ data.loc[data['venue'].isnull(), 'venue'] = "Missing"
         #       If venue not known, take something else?
 
 # Missing values for feature 'references'
-data.loc[data['references'].isnull(), 'references'] = "Missing"
+data.loc[data['references'].isnull(), 'references'] = ""
 
 # Missing values for feature 'topics'
-data.loc[data['topics'].isnull(), 'topics'] = "Missing"
+data.loc[data['topics'].isnull(), 'topics'] = ""
 
 # Missing values for feature 'is_open_access'
-data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "Missing" 
+data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "" 
         #   Take most frequent occurrence for venue
         #       If venue not known, do something else?
     
@@ -107,7 +104,7 @@ This is the dataframe we will use to train the models.
 DO NOT change the order in this section if at all possible
 """
 title_len = length_title(data)      # returns a numbered series
-#Field_variety, field_popularity_dict, field_cit_dict = field_variety(data)    # returns: dictionary of lists: [doi](count)
+field_variety = field_variety(data)    # returns: dictionary of lists: [doi](count)
 team_sz = team_size(data)           # returns a numbered series
 topic_var = topics_variety(data)    # returns a numbered series
 venue_db, venues_reformatted = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
@@ -131,6 +128,7 @@ END do not reorder
 ### join the variables (type = series) to num_X 
 num_X['team_size'] = team_sz
 num_X['topic_variety'] = topic_var
+num_X['field_variety'] = field_variety
 num_X['age'] = paper_age
 num_X['open_access'] = open_access
 num_X['has_keyword'] = abst_keywords
