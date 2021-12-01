@@ -55,19 +55,19 @@ with open('my_dataset2.pickle', 'rb') as dataset2:
 ##########################################
 
 # Missing values for feature 'fields_of_study'
-data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = ""
+data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = "Missing"
 
 # Missing values for feature 'title'
-data.loc[data['title'].isnull(), 'title'] = ""
+data.loc[data['title'].isnull(), 'title'] = "Missing"
 
 # Missing values for feature 'abstract'
-data.loc[data['abstract'].isnull(), 'abstract'] = ""
+data.loc[data['abstract'].isnull(), 'abstract'] = "Missing"
     
 # Missing values for features 'authors'
-data.loc[data['authors'].isnull(), 'authors'] = ""
+data.loc[data['authors'].isnull(), 'authors'] = "Missing"
 
 # Missing values for feature 'venue'
-data.loc[data['venue'].isnull(), 'venue'] = ""
+data.loc[data['venue'].isnull(), 'venue'] = "Missing"
     
 # Missing values for feature 'year'
 # data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = mean(year) 
@@ -75,13 +75,13 @@ data.loc[data['venue'].isnull(), 'venue'] = ""
         #       If venue not known, take something else?
 
 # Missing values for feature 'references'
-data.loc[data['references'].isnull(), 'references'] = ""
+data.loc[data['references'].isnull(), 'references'] = "Missing"
 
 # Missing values for feature 'topics'
-data.loc[data['topics'].isnull(), 'topics'] = ""
+data.loc[data['topics'].isnull(), 'topics'] = "Missing"
 
 # Missing values for feature 'is_open_access'
-data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "" 
+data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "Missing" 
         #   Take most frequent occurrence for venue
         #       If venue not known, do something else?
     
