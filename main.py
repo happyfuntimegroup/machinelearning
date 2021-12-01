@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
 from CODE.features.length_title import length_title
-#from CODE.features.field_variety import field_variety2
 #from CODE.features.field_variety import field_variety         # Not working anymore?
 from CODE.features.team_size import team_size
 from CODE.features.topic_variety import topics_variety
@@ -52,61 +51,35 @@ with open('my_dataset2.pickle', 'rb') as dataset2:
 ##########################################
 
 # Missing values for feature 'fields_of_study'
-for i in range(len(data)):
-    fields = data.iloc[i]['fields_of_study'] 
-    if fields == None:   
-        data.iloc[i]['fields_of_study'] = ""   #when we put "None" here, counts its characters and gives 4 for an empty value instead of 0
-    #dict_field_num[doi] = len(fields) #double check field_variety2 function and the need for a function like that
+data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = ""
 
 # Missing values for feature 'title'
-for i in range(len(data)):
-    title = data.iloc[i]['title']
-    if title == None: 
-        data.iloc[i]['title'] = ""
+data.loc[data['title'].isnull(), 'title'] = ""
 
 # Missing values for feature 'abstract'
-for i in range(len(data)):
-    abstract = data.iloc[i]['abstract']
-    if abstract == None:
-        data.iloc[i]['abstract'] = ""
+data.loc[data['abstract'].isnull(), 'abstract'] = ""
     
 # Missing values for features 'authors'
-for i in range(len(data)):
-    authors = data.iloc[i]['authors']
-    if authors == None:
-        data.iloc[i]['authors'] = []
+data.loc[data['authors'].isnull(), 'authors'] = ""
 
 # Missing values for feature 'venue'
-for i in range(len(data)):
-    venue = data.iloc[i]['venue']
-    if venue == None:
-        data.iloc[i]['venue'] = ""
+data.loc[data['venue'].isnull(), 'venue'] = ""
     
 # Missing values for feature 'year'
-for i in range(len(data)):
-    year = data.iloc[i]['year']
-    if year == None:
-        data.iloc[i]['year'] = mean(year) # Take mean by venue instead
-        #                                   If venue not known, take something else?
+# data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = mean(year) 
+        #   Take mean by venue instead
+        #       If venue not known, take something else?
 
 # Missing values for feature 'references'
-for i in range(len(data)):
-    references = data.iloc[i]['references']
-    if references == None:      
-        data.iloc[i]['references'] = ""
+data.loc[data['references'].isnull(), 'references'] = ""
 
 # Missing values for feature 'topics'
-for i in range(len(data)):
-    topics = data.iloc[i]['topics']
-    if topics == None:
-        data.iloc[i]['topics'] = []
+data.loc[data['topics'].isnull(), 'topics'] = ""
 
 # Missing values for feature 'is_open_access'
-for i in range(len(data)):
-    access = data.iloc[i]['is_open_access']
-    if access == None:
-        data.iloc[i]['is_open_access'] = "" #   Take most frequent occurrence for venue
-        #                                       If venue not known, do something else?
+data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "" 
+        #   Take most frequent occurrence for venue
+        #       If venue not known, do something else?
     
 ##########################################
 #       New variable, to add onto        #
@@ -122,12 +95,15 @@ ALL: After writing a funtion to create a feature, please incorporate your new fe
 This is the dataframe we will use to train the models.
 """
 
-### use feature function to create a new variable
+##########################################
+#            Feature creation            #
+##########################################
+#### Add series of data to dataframe
 """
 DO NOT change the order in this section if at all possible
 """
 title_len = length_title(data)      # returns a numbered series
-#field_var = field_variety2(data)    # returns: dictionary of lists: [doi](count)
+#Field_variety, field_popularity_dict, field_cit_dict = field_variety(data)    # returns: dictionary of lists: [doi](count)
 team_sz = team_size(data)           # returns a numbered series
 topic_var = topics_variety(data)    # returns a numbered series
 venue_db, venues_reformatted = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
@@ -205,3 +181,6 @@ IMPLEMENT regression models fuctions here
 - exponential
 """
 
+# import json
+#with open("sample.json", "w") as outfile:
+    #json.dump(dictionary, outfile)
