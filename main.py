@@ -156,9 +156,9 @@ num_X['open_access'] = open_access
 num_X['has_keyword'] = abst_keywords
 num_X['venue'] = venues_reformatted
 num_X['venPresL'] = venPresL
+num_X['title_length'] = title_len
 
-### join the variables (type = dictionary) to num_X
-num_X['title_length'] = num_X['doi'].map(title_len)
+### MODEL CODE: join the variables (type = dictionary) to num_X
 #num_X['field_variety'] = num_X['doi'].map(field_var)
 
 
