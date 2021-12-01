@@ -1,12 +1,18 @@
-"""
-SETUP
-"""
-### Import models
+# Machine Learning Challenge
+# Course: Machine Learning (880083-M-6)
+# Group 58
+ 
+##########################################
+#             Import packages            #
+##########################################
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-### Import self-made functions
+
+##########################################
+#      Import self-made functions        #
+##########################################
 from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
 from CODE.features.length_title import length_title
@@ -18,15 +24,22 @@ from CODE.features.venue_frequency import venue_frequency
 from CODE.features.venue_citations import venues_citations
 from CODE.features.age import age
 from CODE.features.author_database import author_database
-#from CODE.features.author_name import author_name
 from CODE.features.abst_words import abst_words
 from CODE.features.author_h_index import author_h_index
 from CODE.features.paper_h_index import paper_h_index
 
-### Load all datasets:
-data = pd.read_json('DATA/train.json')   # Numerical columns: 'year', 'references', 'citations'
-test = pd.read_json('DATA/test.json')
 
+##########################################
+#              Load datasets             #
+##########################################
+# Main datasets
+data = pd.read_json('DATA/train.json')      # Training set
+test = pd.read_json('DATA/test.json')       # Test set
+
+# Author-centric datasets
+#   These datasets were made using our self-made functions 'citations_per_author' (for the author_citation_dic)
+#   These functions took a long time to make (ballpark ~10 minutes on a laptop in 'silent mode'), so instead we 
+#   decided to run this function once, save the data, and reload the datasets instead of running the function again. 
 import pickle
 with open('my_dataset1.pickle', 'rb') as dataset:
     author_citation_dic = pickle.load(dataset)
@@ -34,140 +47,72 @@ with open('my_dataset2.pickle', 'rb') as dataset2:
     author_db = pickle.load(dataset2)
 
 
-###DEAL with missing values in "data" and "test" here 
+##########################################
+#        Missing values handling         #
+##########################################
 
-data = data  
-
-#dict_field_num = {}
-dict_fields = {}
+# Missing values for feature 'fields_of_study'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
     fields = data.iloc[i]['fields_of_study'] 
     if fields == None:   
-        fields = ""   #when we put "None" here, counts its characters and gives 4 for an empty value instead of 0
+        data.iloc[i]['fields_of_study'] = ""   #when we put "None" here, counts its characters and gives 4 for an empty value instead of 0
     #dict_field_num[doi] = len(fields) #double check field_variety2 function and the need for a function like that
-    dict_fields[doi] = fields  
-#dict_field_num.values() 
-#dict_fields.values() 
 
-
-dict_title = {}
-#dict_length_title = {}
+# Missing values for feature 'title'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
     title = data.iloc[i]['title']
     if title == None: 
-        title = ""
-    dict_title[doi] = title
-   # dict_length_title[doi] = len(title)
-    
-#dict_title.values() 
-#dict_length_title.values()
+        data.iloc[i]['title'] = ""
 
-
-dict_abstract = {}
-#dict_length_abstract = {}
+# Missing values for feature 'abstract'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
     abstract = data.iloc[i]['abstract']
     if abstract == None:
-        abstract = "" # abstract = title?
-    dict_abstract[doi] = (abstract)
- #   dict_length_abstract[doi] = len(abstract)
+        data.iloc[i]['abstract'] = ""
     
-#dict_abstract.values() 
-#dict_length_abstract.values()
-
-dict_authors = {}
-#dict_author_num = {}
+# Missing values for features 'authors'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
     authors = data.iloc[i]['authors']
     if authors == None:
-        authors = ""
-    dict_authors[doi] = (authors)
- #   dict_author_num[doi] = len(authors)
-    
-#dict_authors.values() 
-#dict_author_num.values()
+        data.iloc[i]['authors'] = []
 
-
-dict_venues = {}
+# Missing values for feature 'venue'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
     venue = data.iloc[i]['venue']
     if venue == None:
-        venue = ""
-    dict_venues[doi] = (venue)
+        data.iloc[i]['venue'] = ""
     
-#dict_venues.values() 
-
-
-dict_year = {}
+# Missing values for feature 'year'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
-    year = data.iloc[i]['year'] #change it based on venue?
+    year = data.iloc[i]['year']
     if year == None:
-        year = mean(year)
-    dict_year[doi] = (year)
-    
-#dict_year.values() 
+        data.iloc[i]['year'] = mean(year) # Take mean by venue instead
+        #                                   If venue not known, take something else?
 
-
-dict_references = {}
+# Missing values for feature 'references'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
     references = data.iloc[i]['references']
     if references == None:      
-        references = ""     #999?
-    dict_references[doi] = (references)
-    
-#dict_references.values()
+        data.iloc[i]['references'] = ""
 
-
-dict_topics = {}
-#dict_topics_num ={}
+# Missing values for feature 'topics'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
     topics = data.iloc[i]['topics']
     if topics == None:
-        topics = [""]         #topic = title?
-    dict_topics[doi] = (topics)
- #   dict_topics_num[doi] = len(topics)
-    
-#dict_topics.values() 
-#dict_topics_num.values()
+        data.iloc[i]['topics'] = []
 
-
-dict_access = {}
+# Missing values for feature 'is_open_access'
 for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
     access = data.iloc[i]['is_open_access']
     if access == None:
-        access = "" 
-    dict_access[doi] = (access)
+        data.iloc[i]['is_open_access'] = "" #   Take most frequent occurrence for venue
+        #                                       If venue not known, do something else?
     
-#dict_access.values() 
-
-
-#dict_citations = {}
-#for i in range(len(data)):
-#    doi = data.iloc[i]['doi'] 
-#    citations = data.iloc[i]['citations']
-#    if citations == None:
-#        citations = 9999 
-#    dict_citations[doi] = (citations)
-    
-#dict_citations.values()        
-
-
-
-
-### push the numerical columns to num_X
+##########################################
+#       New variable, to add onto        #
+##########################################
 end = len(data)
 num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
-
-
 
 
 """
