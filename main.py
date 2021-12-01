@@ -16,7 +16,11 @@ import matplotlib.pyplot as plt
 from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
 from CODE.features.length_title import length_title
+<<<<<<< HEAD
 #from CODE.features.field_variety import field_variety         # Not working anymore?
+=======
+from CODE.features.field_variety import field_variety         
+>>>>>>> e3536806341ec671f1e8fb11d434fda2449fe15d
 from CODE.features.team_size import team_size
 from CODE.features.topic_variety import topics_variety
 from CODE.features.venue_frequency import venue_frequency

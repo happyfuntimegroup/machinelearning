@@ -14,10 +14,3 @@ def topics_variety(df):
     Topic_variety = pd.Series([len(i) for i in df['topics']])      # Topic variety
 
     return Topic_variety                                           #Output
-
-
-# In[18]:
-
-
-#topics_variety(df).value_counts()
-
