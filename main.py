@@ -16,10 +16,12 @@ import matplotlib.pyplot as plt
 from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
 from CODE.features.length_title import length_title
-from CODE.features.field_variety import field_variety         # Not working anymore?
+from CODE.features.field_variety import field_variety         
+from CODE.features.field_popularity import field_popularity 
 from CODE.features.team_size import team_size
 from CODE.features.topic_variety import topics_variety
-from CODE.features.venue_frequency import venue_frequency
+from CODE.features.topic_popularity import topic_popularity
+from CODE.features.venue_popularity import venue_popularity
 from CODE.features.venue_citations import venues_citations
 from CODE.features.age import age
 from CODE.features.author_database import author_database
@@ -103,10 +105,13 @@ This is the dataframe we will use to train the models.
 DO NOT change the order in this section if at all possible
 """
 num_X['title_length'] = length_title(data)      # returns a numbered series
-num_X['field_variety'] = field_variety(data)    # returns: dictionary of lists: [doi](count)
+num_X['field_variety'] = field_variety(data)    # returns a numbered series 
+num_X['field_popularity'] = field_popularity(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
+num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
 venue_db, num_X['venue'] = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
+num_X['venue_popularity'] = venue_popularity # returns a numbered series
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
@@ -117,12 +122,6 @@ num_X['has_keyword'] = abst_words(data, keywords)   #returns a numbered series: 
 author_db, reformatted_authors = author_database(data)
 data['authors'] = reformatted_authors
 num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
-
-# Check venue and add venue_frequency to each paper
-venue_freq = pd.Series(dtype=pd.Int64Dtype())
-for index, i_paper in num_X.iterrows():
-    venue_freq[index,] = venue_db[i_paper['venue']] 
-num_X['venue_freq'] = venue_freq
 
 """
 END do not reorder

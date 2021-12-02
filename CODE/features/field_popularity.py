@@ -20,8 +20,12 @@ def field_popularity(data):
                 field_popularity_dict[field] += 1
             else:
                 field_popularity_dict[field] = 1
+    
+    field_freq = pd.Series(dtype=pd.Int64Dtype())
+    for index, i_paper in data.iterrows():
+        field_freq[index,] = field_popularity_dict[i_paper['fields_of_study']] 
 
-        return field_popularity_dict
+    return field_freq
         
 
 

@@ -14,7 +14,6 @@ def topic_popularity(data):
     for index, i_paper in data.iterrows():
 
         topics = i_paper['topics']
-        citation = i_paper['citations']
         
         for topic in topics:
             if topic in topic_popularity_dict.keys():
@@ -22,7 +21,11 @@ def topic_popularity(data):
             else:
                 topic_popularity_dict[topic] = 1
 
-    return topic_popularity_dict
+    topic_freq = pd.Series(dtype=pd.Int64Dtype())
+    for index, i_paper in data.iterrows():
+        topic_freq[index,] = topic_popularity_dict[i_paper['topics']] 
+
+    return topic_freq
             
             
             
