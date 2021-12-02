@@ -1,6 +1,6 @@
 from numpy.lib.function_base import average
 import pandas as pd
-
+import math
 def topic_popularity(data):
     """
     Computes the avarage citations for each topic
@@ -10,6 +10,7 @@ def topic_popularity(data):
         - Count of field frequency:                                                            [int]
     """
     topic_popularity_dict = {}
+    topic_freq = pd.Series(dtype=pd.Int64Dtype())
 
     for index, i_paper in data.iterrows():
 
@@ -21,9 +22,16 @@ def topic_popularity(data):
             else:
                 topic_popularity_dict[topic] = 1
 
-    topic_freq = pd.Series(dtype=pd.Int64Dtype())
     for index, i_paper in data.iterrows():
-        topic_freq[index,] = topic_popularity_dict[i_paper['topics']] 
+        topics = i_paper['topics']
+        topics_list = []
+        for topic in topics:
+            topics_list.append(topic_popularity_dict[topic])
+        if len(topics_list) != 0:
+            most_popular = max(topics_list)
+        else:
+            most_popular = math.nan
+        topic_freq[index,] = most_popular
 
     return topic_freq
             
