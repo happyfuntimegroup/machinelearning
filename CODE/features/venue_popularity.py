@@ -22,7 +22,7 @@ def venue_popularity(data):
     
     # Check venue and add venue_frequency to each paper
     venue_freq = pd.Series(dtype=pd.Int64Dtype())
-    for index, i_paper in venue_reformatted.iterrows():
-        venue_freq[index,] = venues_popularity_dict[i_paper['venue']] 
+    for index, i_paper in data.iterrows():
+        venue_freq[index,] = venues_popularity_dict[venue_reformatted[index]] 
 
     return venue_freq, venue_reformatted
