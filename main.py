@@ -110,8 +110,7 @@ num_X['field_popularity'] = field_popularity(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
 num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
-venue_db, num_X['venue'] = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
-num_X['venue_popularity'] = venue_popularity # returns a numbered series
+num_X['venue_popularity'], num_X['venue'] = venue_popularity(data)  # returns a numbered series and a pandas.Series of the 'venues' column reformatted 
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)

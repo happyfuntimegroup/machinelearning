@@ -24,5 +24,5 @@ def venue_popularity(data):
     venue_freq = pd.Series(dtype=pd.Int64Dtype())
     for index, i_paper in data.iterrows():
         venue_freq[index,] = venues_popularity_dict[i_paper['venue']] 
-        
-    return venue_reformatted, venue_freq
+
+    return venue_freq, venue_reformatted
