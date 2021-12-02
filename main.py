@@ -17,7 +17,6 @@ from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
 from CODE.features.length_title import length_title
 from CODE.features.field_variety import field_variety         # Not working anymore?
-from CODE.features.field_variety import field_variety         
 from CODE.features.team_size import team_size
 from CODE.features.topic_variety import topics_variety
 from CODE.features.venue_frequency import venue_frequency
@@ -103,42 +102,21 @@ This is the dataframe we will use to train the models.
 """
 DO NOT change the order in this section if at all possible
 """
-title_len = length_title(data)      # returns a numbered series
-field_variety = field_variety(data)    # returns: dictionary of lists: [doi](count)
-team_sz = team_size(data)           # returns a numbered series
-topic_var = topics_variety(data)    # returns a numbered series
-venue_db, venues_reformatted = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
-num_X['venue'] = venues_reformatted # Dataframe needs a venue to deal with missing values
-open_access = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
-paper_age = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
-venPresL = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
+num_X['title_length'] = length_title(data)      # returns a numbered series
+num_X['field_variety'] = field_variety(data)    # returns: dictionary of lists: [doi](count)
+num_X['team_sz'] = team_size(data)           # returns a numbered series
+num_X['topic_var'] = topics_variety(data)    # returns a numbered series
+venue_db, num_X['venue'] = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
+num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
+num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
+num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 keywords = ["method", "review", "randomized", "random control"]
-abst_keywords = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+num_X['has_keyword'] = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
 
-# Author centric
+# Author H-index
 author_db, reformatted_authors = author_database(data)
 data['authors'] = reformatted_authors
 num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
-
-"""
-END do not reorder
-"""
-
-
-### join the variables (type = series) to num_X 
-num_X['team_size'] = team_sz
-num_X['topic_variety'] = topic_var
-num_X['field_variety'] = field_variety
-num_X['age'] = paper_age
-num_X['open_access'] = open_access
-num_X['has_keyword'] = abst_keywords
-num_X['venue'] = venues_reformatted
-num_X['venPresL'] = venPresL
-num_X['title_length'] = title_len
-
-### MODEL CODE: join the variables (type = dictionary) to num_X
-#num_X['field_variety'] = num_X['doi'].map(field_var)
-
 
 # Check venue and add venue_frequency to each paper
 venue_freq = pd.Series(dtype=pd.Int64Dtype())
@@ -146,6 +124,9 @@ for index, i_paper in num_X.iterrows():
     venue_freq[index,] = venue_db[i_paper['venue']] 
 num_X['venue_freq'] = venue_freq
 
+"""
+END do not reorder
+"""
 
 ### Drop columns containing just strings
 num_X = num_X.drop(['venue', 'doi'], axis = 1)
