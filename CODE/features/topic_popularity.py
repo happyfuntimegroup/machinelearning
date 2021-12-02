@@ -7,20 +7,13 @@ def topic_popularity(data):
     Input:
         - df['topics']:    dataframe (dataset); 'topics' column                   [pandas dataframe]
     Output:
-        - Avarage citations:                                                            [int]
+        - Count of field frequency:                                                            [int]
     """
-   
-
     topic_popularity_dict = {}
-    citations = []
-    topics_dict = {}
 
     for index, i_paper in data.iterrows():
 
         topics = i_paper['topics']
-        if topics == None:
-            topics = ['Missing']
-        
         citation = i_paper['citations']
         
         for topic in topics:
@@ -29,14 +22,7 @@ def topic_popularity(data):
             else:
                 topic_popularity_dict[topic] = 1
 
-            if topic in topics_dict.keys():
-                citations.append(citation)
-                topics_dict[topic] = sum(citations) / len(citations)
-            else:
-                topics_dict[topic] = citation
-
-    print(topic_popularity_dict)
-    print(topics_dict)
+    return topic_popularity_dict
             
             
             
