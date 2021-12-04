@@ -15,19 +15,33 @@ import matplotlib.pyplot as plt
 ##########################################
 from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
+
+#feature based on the title of the paper
 from CODE.features.length_title import length_title
+
+# features based on 'field_of_study' column 
 from CODE.features.field_variety import field_variety         
-from CODE.features.field_popularity import field_popularity 
-from CODE.features.team_size import team_size
+from CODE.features.field_popularity import field_popularity
+from CODE.features.field_citations_avarage import field_citations_avarage 
+
+# features based on the topics of the paper
+from CODE.features.topic_citations_avarage import topic_citations_avarage
 from CODE.features.topic_variety import topics_variety
 from CODE.features.topic_popularity import topic_popularity
+from CODE.features.topic_citations_avarage import topic_citations_avarage
+
+# features based on the venue of the paper
 from CODE.features.venue_popularity import venue_popularity
 from CODE.features.venue_citations import venues_citations
+
 from CODE.features.age import age
-from CODE.features.author_database import author_database
 from CODE.features.abst_words import abst_words
+
+# features based on the authors of the paper
 from CODE.features.author_h_index import author_h_index
 from CODE.features.paper_h_index import paper_h_index
+from CODE.features.team_size import team_size
+from CODE.features.author_database import author_database
 
 
 ##########################################
@@ -107,9 +121,11 @@ DO NOT change the order in this section if at all possible
 num_X['title_length'] = length_title(data)      # returns a numbered series
 num_X['field_variety'] = field_variety(data)    # returns a numbered series 
 num_X['field_popularity'] = field_popularity(data) # returns a numbered series
+num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
 num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
+num_X['topic_citations_avarage'] = topic_citations_avarage(data) # returns a numbered series
 num_X['venue_popularity'], num_X['venue'] = venue_popularity(data)  # returns a numbered series and a pandas.Series of the 'venues' column reformatted 
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
