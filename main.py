@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
+import yake  #NOTE: with Anaconda: conda install -c conda-forge yake
 
 ##########################################
 #      Import self-made functions        #
@@ -29,6 +30,9 @@ from CODE.features.topic_citations_avarage import topic_citations_avarage
 from CODE.features.topic_variety import topics_variety
 from CODE.features.topic_popularity import topic_popularity
 from CODE.features.topic_citations_avarage import topic_citations_avarage
+
+# features based on the abstract of the paper
+from CODE.features.keywords import best_keywords
 
 # features based on the venue of the paper
 from CODE.features.venue_popularity import venue_popularity
@@ -98,24 +102,21 @@ data.loc[data['topics'].isnull(), 'topics'] = ""
         #       If venue not known, do something else?
     
 ##########################################
-#       New variable, to add onto        #
+#       Create basic numeric df          #
 ##########################################
 end = len(data)
 num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
 
 
+##########################################
+#            Feature creation            #
+##########################################
 """
 FEATURE DATAFRAME: num_X
 
 ALL: After writing a funtion to create a feature, please incorporate your new feature as a column on the dataframe below.
 This is the dataframe we will use to train the models.
-"""
 
-##########################################
-#            Feature creation            #
-##########################################
-#### Add series of data to dataframe
-"""
 DO NOT change the order in this section if at all possible
 """
 num_X['title_length'] = length_title(data)      # returns a numbered series
@@ -130,7 +131,8 @@ num_X['venue_popularity'], num_X['venue'] = venue_popularity(data)  # returns a 
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
-keywords = ["method", "review", "randomized", "random control"]
+best_keywords(data, 3, .95)  # from [data set] get [integer] keywords from papers in the top [citation rate]; returns list
+#keywords = ["method", "review", "randomized", "random control"]
 num_X['has_keyword'] = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
 
 # Author H-index
@@ -142,7 +144,9 @@ num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered
 END do not reorder
 """
 
-### Deal with specific missing values
+##########################################
+#    Deal with specific missing values   #
+##########################################
 # Open_access, thanks to jreback (27th of July 2016) https://github.com/pandas-dev/pandas/issues/13809
 OpAc_by_venue = num_X.groupby('venue').open_access.apply(lambda x: x.mode()) # Take mode for each venue
 OpAc_by_venue = OpAc_by_venue.to_dict()
@@ -160,6 +164,11 @@ for i, i_paper in missing_OpAc.iterrows():
 num_X = num_X.drop(['venue', 'doi'], axis = 1)
 num_X = num_X.dropna()
 
+
+##########################################
+#            Train/val split             #
+##########################################
+
 ## train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 
@@ -167,6 +176,10 @@ X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 """
 INSERT outlier detection on X_train here - ALBERT
 """
+
+##########################################
+#            Outlier detection           #
+##########################################
 ### MODEL code for outlier detection
 ### names: X_train, X_val, y_train, y_val
 
@@ -189,6 +202,10 @@ INSERT outlier detection on X_train here - ALBERT
 
 # Potential features to get rid of: team_sz
 
+
+##########################################
+#         Model implementations          #
+##########################################
 """
 IMPLEMENT regression models fuctions here
 - exponential

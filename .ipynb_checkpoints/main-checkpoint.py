@@ -1,172 +1,173 @@
-"""
-SETUP
-"""
-### Import models
+# Machine Learning Challenge
+# Course: Machine Learning (880083-M-6)
+# Group 58
+ 
+##########################################
+#             Import packages            #
+##########################################
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-import scipy
+from scipy.stats import pearsonr
+import yake  #NOTE: with Anaconda: conda install -c conda-forge yake
 
-### Import self-made functions
+##########################################
+#      Import self-made functions        #
+##########################################
 from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
+
+#feature based on the title of the paper
 from CODE.features.length_title import length_title
-from CODE.features.field_variety import field_variety2
-#from CODE.features.field_variety import field_variety
-from CODE.features.team_size import team_size
+
+# features based on 'field_of_study' column 
+from CODE.features.field_variety import field_variety         
+from CODE.features.field_popularity import field_popularity
+from CODE.features.field_citations_avarage import field_citations_avarage 
+
+# features based on the topics of the paper
+from CODE.features.topic_citations_avarage import topic_citations_avarage
 from CODE.features.topic_variety import topics_variety
-from CODE.features.venue_frequency import venue_frequency
+from CODE.features.topic_popularity import topic_popularity
+from CODE.features.topic_citations_avarage import topic_citations_avarage
+
+# features based on the abstract of the paper
+from CODE.features.keywords import best_keywords
+
+# features based on the venue of the paper
+from CODE.features.venue_popularity import venue_popularity
 from CODE.features.venue_citations import venues_citations
+
 from CODE.features.age import age
-#from CODE.features.author_database import author_database
-#from CODE.features.author_name import author_name
 from CODE.features.abst_words import abst_words
 
-### Load all datasets:
-data = pd.read_json('DATA/train-1.json')   # Numerical columns: 'year', 'references', 'citations'
-test = pd.read_json('DATA/test.json')
+# features based on the authors of the paper
+from CODE.features.author_h_index import author_h_index
+from CODE.features.paper_h_index import paper_h_index
+from CODE.features.team_size import team_size
+from CODE.features.author_database import author_database
 
+
+##########################################
+#              Load datasets             #
+##########################################
+# Main datasets
+data = pd.read_json('DATA/train.json')      # Training set
+test = pd.read_json('DATA/test.json')       # Test set
+
+# Author-centric datasets
+#   These datasets were made using our self-made functions 'citations_per_author' (for the author_citation_dic)
+#   These functions took a long time to make (ballpark ~10 minutes on a laptop in 'silent mode'), so instead we 
+#   decided to run this function once, save the data, and reload the datasets instead of running the function again. 
 import pickle
-with open('my_dataset1.pickle', 'rb') as data:
-    author_citation_dic = pickle.load(data)
-with open('my_dataset2.pickle', 'rb') as data:
-    author_db = pickle.load(data)
+with open('my_dataset1.pickle', 'rb') as dataset:
+    author_citation_dic = pickle.load(dataset)
+with open('my_dataset2.pickle', 'rb') as dataset2:
+    author_db = pickle.load(dataset2)
 
 
-"""
-###DEAL with missing values in "data" and "test" here 
+##########################################
+#        Missing values handling         #
+##########################################
 
-data = data   #data = test for test data
-dict_field_var = {}
-dict_title = {}
-dict_abstract = {}
-dict_authors = {}
-dict_venue = {}
-dict_year = {}
-dict_references = {}
-dict_topics = {}
-dict_access = {}
-dict_citations = {} #delete this for test data
+# Missing values for feature 'fields_of_study'
+data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = ""
 
-for i in range(len(data)):
-    doi = data.iloc[i]['doi'] 
-    fields = data.iloc[i]['fields_of_study']
-    title = data.iloc[i]['title']
-    abstract = data.iloc[i]['abstract']
-    authors = data.iloc[i]['authors']
-    venue = data.iloc[i]['venue']
-    year = data.iloc[i]['year']
-    references = data.iloc[i]['references']
-    topics = data.iloc[i]['topics']
-    access = data.iloc[i]['is_open_access']
-    citations = data.iloc[i]['citations'] #delete for test data
-        
-#   if doi == None:
-#       doi = i
-    if fields == None:    #Filling the categorical value with a new type for the missing values.
-        fields = "None"    
-    dict_field_var[doi] = (len(fields))
-    if title == None: 
-       title = "None"
-    dict_title[doi] = (len(title))
-    if abstract == None:
-        abstract = "None" # abstract = title
-    dict_abstract[doi] = (len(fields))
-    if authors == None:
-        authors = "None"
-    dict_authors[doi] = (len(authors))
-    if venue == None:          #Filling the missing data with mode if it’s a categorical value?
-        venue = "None"
-    dict_venue[doi] = (len(venue))
-    if year == None:
-        year = mean(year)   #mean of year based on "data" 
-    dict_year[doi] = (len(year))
-    if references == None:
-        references = mean(references) # references = 999
-    dict_references[doi] = (len(references))
-    if topics == None:
-        topics = "None" #topic = title
-    dict_topics[doi] = (len(references))
-    if access == None:
-        access = "None"   #based on venue?
-    dict_access[doi] = (len(access))
-    if citations == None:           #delete for test data
-        citations = "None"
-    dic_citations[doi] =(len(citations))    
+# Missing values for feature 'title'
+data.loc[data['title'].isnull(), 'title'] = ""
+
+# Missing values for feature 'abstract'
+data.loc[data['abstract'].isnull(), 'abstract'] = ""
     
-return dict_field_var 
-return dict_title 
-return dict_abstract 
-return dict_authors 
-return dict_venue
-return dict_year 
-return dict_references
-return dict_topic 
-return dict_access
-return dict_citations #delete for test data
-"""
+# Missing values for features 'authors'
+data.loc[data['authors'].isnull(), 'authors'] = ""
 
+# Missing values for feature 'venue'
+data.loc[data['venue'].isnull(), 'venue'] = ""
+    
+# Missing values for feature 'year'
+# data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = mean(year) 
+        #   Take mean by venue instead
+        #       If venue not known, take something else?
 
+# Missing values for feature 'references'
+data.loc[data['references'].isnull(), 'references'] = ""
 
-### push the numerical columns to num_X
+# Missing values for feature 'topics'
+data.loc[data['topics'].isnull(), 'topics'] = ""
+
+# Missing values for feature 'is_open_access'
+#data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "" 
+        #   Take most frequent occurrence for venue
+        #       If venue not known, do something else?
+    
+##########################################
+#       Create basic numeric df          #
+##########################################
 end = len(data)
 num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
 
 
-
-
+##########################################
+#            Feature creation            #
+##########################################
 """
 FEATURE DATAFRAME: num_X
 
 ALL: After writing a funtion to create a feature, please incorporate your new feature as a column on the dataframe below.
 This is the dataframe we will use to train the models.
-"""
 
-### use feature function to create a new variable
-"""
 DO NOT change the order in this section if at all possible
 """
-title_len = length_title(data)      # returns: dictionary of lists: [doi](count)
-field_var = field_variety2(data)    # returns: dictionary of lists: [doi](count)
-team_sz = team_size(data)           # returns a numbered series
-topic_var = topics_variety(data)    # returns a numbered series
-venue_db, venues_reformatted = venue_frequency(data)  # returns a dictionary: [venue](count) and a pandas.Series of the 'venues' column reformatted 
-num_X['venue'] = venues_reformatted # Dataframe needs a venue to deal with missing values
-open_access = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
-paper_age = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
-venPresL = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
-keywords = ["method", "review", "randomized", "random control"]
-abst_keywords = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+num_X['title_length'] = length_title(data)      # returns a numbered series
+num_X['field_variety'] = field_variety(data)    # returns a numbered series 
+num_X['field_popularity'] = field_popularity(data) # returns a numbered series
+#num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
+num_X['team_sz'] = team_size(data)           # returns a numbered series
+num_X['topic_var'] = topics_variety(data)    # returns a numbered series
+num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
+num_X['topic_citations_avarage'] = topic_citations_avarage(data) # returns a numbered series
+num_X['venue_popularity'], num_X['venue'] = venue_popularity(data)  # returns a numbered series and a pandas.Series of the 'venues' column reformatted 
+num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
+num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
+num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
+best_keywords(data, 3, .95)  # from [data set] get [integer] keywords from papers in the top [citation rate]; returns list
+#keywords = ["method", "review", "randomized", "random control"]
+num_X['has_keyword'] = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+
+# Author H-index
+author_db, reformatted_authors = author_database(data)
+data['authors'] = reformatted_authors
+num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
+
 """
 END do not reorder
 """
 
-
-### join the variables (type = series) to num_X 
-num_X['team_size'] = team_sz
-num_X['topic_variety'] = topic_var
-num_X['age'] = paper_age
-num_X['open_access'] = open_access
-num_X['has_keyword'] = abst_keywords
-num_X['venue'] = venues_reformatted
-num_X['venPresL'] = venPresL
-
-### join the variables (type = dictionary) to num_X
-num_X['title_length'] = num_X['doi'].map(title_len)
-num_X['field_variety'] = num_X['doi'].map(field_var)
-
-
-# Check venue and add venue_frequency to each paper
-venue_freq = pd.Series(dtype=pd.Int64Dtype())
-for index, i_paper in num_X.iterrows():
-    venue_freq[index,] = venue_db[i_paper['venue']] 
-num_X['venue_freq'] = venue_freq
-
+##########################################
+#    Deal with specific missing values   #
+##########################################
+# Open_access, thanks to jreback (27th of July 2016) https://github.com/pandas-dev/pandas/issues/13809
+OpAc_by_venue = num_X.groupby('venue').open_access.apply(lambda x: x.mode()) # Take mode for each venue
+OpAc_by_venue = OpAc_by_venue.to_dict()
+missing_OpAc = num_X.loc[num_X['open_access'].isnull(),]
+for i, i_paper in missing_OpAc.iterrows():
+    venue = i_paper['venue']
+    doi = i_paper['doi']
+    index = num_X[num_X['doi'] == doi].index[0]
+    if venue in OpAc_by_venue.keys():   # If a known venue, append the most frequent value for that venue
+        num_X[num_X['doi'] == doi]['open_access'] = OpAc_by_venue[venue] # Set most frequent occurrence 
+    else:                               # Else take most occurring value in entire dataset
+        num_X.loc[index,'open_access'] = num_X.open_access.mode()[0] # Thanks to BENY (2nd of February, 2018) https://stackoverflow.com/questions/48590268/pandas-get-the-most-frequent-values-of-a-column
 
 ### Drop columns containing just strings
 num_X = num_X.drop(['venue', 'doi'], axis = 1)
+num_X = num_X.dropna()
 
+
+##########################################
+#            Train/val split             #
+##########################################
 
 ## train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
@@ -175,28 +176,41 @@ X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 """
 INSERT outlier detection on X_train here - ALBERT
 """
+
+##########################################
+#            Outlier detection           #
+##########################################
 ### MODEL code for outlier detection
 ### names: X_train, X_val, y_train, y_val
 
 # print(list(X_train.columns))
 
-# out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
-# out_X = (find_outliers_tukey(x = X_train['team_size'], top = 99, bottom = 0))[0]
-# out_rows = out_y + out_X
-# out_rows = sorted(list(set(out_rows)))
+out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
+out_X = (find_outliers_tukey(x = X_train['team_sz'], top = 99, bottom = 0))[0]
+out_rows = out_y + out_X
+out_rows = sorted(list(set(out_rows)))
 
 # print("X_train:")
 # print(X_train.shape)
-# X_train = X_train.drop(labels = out_rows)
+X_train = X_train.drop(labels = out_rows)
 # print(X_train.shape)
 # print()
 # print("y_train:")
 # print(y_train.shape)
-# y_train = y_train.drop(labels = out_rows)
+y_train = y_train.drop(labels = out_rows)
 # print(y_train.shape)
 
+# Potential features to get rid of: team_sz
+
+
+##########################################
+#         Model implementations          #
+##########################################
 """
 IMPLEMENT regression models fuctions here
 - exponential
 """
 
+# import json
+#with open("sample.json", "w") as outfile:
+    #json.dump(dictionary, outfile)
