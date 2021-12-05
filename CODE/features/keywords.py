@@ -1,9 +1,13 @@
-def best_keywords (data, words_per_paper, paper_quantile):
+def best_keywords (data, words_per_paper, lower_bound, upper_bound):
     import yake
     # take the most highly cited papers from data set
-    a = data['citations'].quantile(q = paper_quantile)
-    best = data[data['citations'] > a]
-    best['keywords'] = ''
+    lower = data['citations'].quantile(q = lower_bound)
+    best = data[data['citations'] > lower]
+
+    upper = data['citations'].quantile(q = upper_bound)
+    best = best[best['citations'] > upper]
+
+    best['keywords'] = ""
 
     # setup for the keyword extractor
     extractor = yake.KeywordExtractor()
@@ -29,3 +33,4 @@ def best_keywords (data, words_per_paper, paper_quantile):
     kwords = [x for l in kwords for x in l]
     return set(kwords)
 
+# source: https://towardsdatascience.com/keyword-extraction-process-in-python-with-natural-language-processing-nlp-d769a9069d5c

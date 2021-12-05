@@ -122,7 +122,7 @@ DO NOT change the order in this section if at all possible
 num_X['title_length'] = length_title(data)      # returns a numbered series
 num_X['field_variety'] = field_variety(data)    # returns a numbered series 
 num_X['field_popularity'] = field_popularity(data) # returns a numbered series
-#num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
+num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
 num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
@@ -131,14 +131,18 @@ num_X['venue_popularity'], num_X['venue'] = venue_popularity(data)  # returns a 
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
-best_keywords(data, 3, .95)  # from [data set] get [integer] keywords from papers in the top [citation rate]; returns list
-#keywords = ["method", "review", "randomized", "random control"]
-num_X['has_keyword'] = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+keywords = best_keywords(data, 1, 0.954, 0.955)    # from [data set] get [integer] keywords from papers btw [lower bound] and [upper bound] quantiles; returns list
+num_X['has_keyword'] = abst_words(data, keywords)#returns a numbered series: 1 if any of the words is present in the abstract, else 0
 
 # Author H-index
 author_db, reformatted_authors = author_database(data)
 data['authors'] = reformatted_authors
 num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
+
+field_avg_cit = num_X.groupby('field_variety').citations.mean()
+for field, field_avg in zip(field_avg_cit.index, field_avg_cit):
+    num_X.loc[num_X['field_variety'] == field, 'field_cit'] = field_avg
+
 
 """
 END do not reorder
@@ -161,7 +165,7 @@ for i, i_paper in missing_OpAc.iterrows():
         num_X.loc[index,'open_access'] = num_X.open_access.mode()[0] # Thanks to BENY (2nd of February, 2018) https://stackoverflow.com/questions/48590268/pandas-get-the-most-frequent-values-of-a-column
 
 ### Drop columns containing just strings
-num_X = num_X.drop(['venue', 'doi'], axis = 1)
+num_X = num_X.drop(['venue', 'doi', 'field_variety'], axis = 1)
 num_X = num_X.dropna()
 
 
@@ -186,8 +190,11 @@ INSERT outlier detection on X_train here - ALBERT
 # print(list(X_train.columns))
 
 out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
-out_X = (find_outliers_tukey(x = X_train['team_sz'], top = 99, bottom = 0))[0]
-out_rows = out_y + out_X
+out_rows = out_y
+
+# out_X = (find_outliers_tukey(x = X_train['team_sz'], top = 99, bottom = 0))[0]
+# out_rows = out_y + out_X
+
 out_rows = sorted(list(set(out_rows)))
 
 # print("X_train:")
@@ -207,9 +214,108 @@ y_train = y_train.drop(labels = out_rows)
 #         Model implementations          #
 ##########################################
 """
-IMPLEMENT regression models fuctions here
-- exponential
+IMPLEMENT models here
+NOTE: Please do not write over X_train, X_val, y_train, y_val in your model - make new variables if needed
+
+
 """
+
+#-----------simple regression, all columns
+"""
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_absolute_error
+
+model = LinearRegression()
+reg = model.fit(X = X_train, y = y_train)
+y_pred_val = model.predict(X_val)
+print(r2_score(y_val, y_pred_val))
+print(mean_absolute_error(y_val, y_pred_val))
+
+MODEL RESULTS:
+R2: 0.03724
+MSE: 33.38996
+"""
+#-----------logistic regression, all columns
+"""
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_val_s = scaler.transform(X_val)
+
+y_ravel = np.ravel(y_train)
+
+model = LogisticRegression(random_state = 123, max_iter = 2000)
+reg = model.fit(X = X_train_s, y = y_ravel)
+y_pred_val = model.predict(X_val_s)
+
+MODEL RESULTS:
+R2: 0.006551953988217396
+MSE: 34.07342328208346
+"""
+#-----------SGD regression, all columns
+"""
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import SGDRegressor
+
+scaler = StandardScaler()
+X_train_z = scaler.fit_transform(X_train)
+X_val_z  =scaler.transform(X_val)
+y_ravel = np.ravel(y_train)
+lr = [ 1, .1, .01, .001, .0001]
+settings = []
+for learning_rate in ['constant', 'optimal', 'invscaling']:
+    for loss in ['squared_error', 'huber']:
+        for eta0 in lr:
+            model = SGDRegressor(learning_rate=learning_rate, eta0=eta0, loss=loss,random_state=666, max_iter=5000)
+            model.fit(X_train_z, y_ravel)
+            y_pred = model.predict(X_val_z)
+            
+            mae = mean_absolute_error(y_val, y_pred)
+            r2 =  r2_score(y_val, y_pred)
+            settings.append((learning_rate, eta0, loss, mae, r2))
+            print(settings[-1])
+
+# MODEL RESULTS:
+# Best outcome: ('constant', 0.01, 'squared_error', 35.74249957361433, 0.04476790061780822)
+"""
+
+#-----------polynomial regression, all columns
+"""
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train_z = scaler.fit_transform(X_train)
+X_val_z  =scaler.transform(X_val)
+
+polynomial_features = PolynomialFeatures(degree = 2)
+x_train_poly = polynomial_features.fit_transform(X_train_z)
+x_val_poly = polynomial_features.transform(X_val_z)
+
+model = LinearRegression()
+model.fit(x_train_poly, y_train)
+y_poly_pred = model.predict(x_val_poly)
+
+print(r2_score(y_val, y_poly_pred))   # -0.04350391168707901
+print(mean_absolute_error(y_val, y_poly_pred))    # 32.65668266590838
+
+source: https://towardsdatascience.com/polynomial-regression-bbe8b9d97491
+"""
+
+
+
+
+
+#model.fit(X_train, y_train)
+#print('Best score: ', model.best_score_)
+#print('Best parameters: ', model.best_params_)
+#y_pred = model.predict(X_val)
+
+#from sklearn.metrics import r2_score
+#print(r2_score(y_val,y_pred))
+
 
 # import json
 #with open("sample.json", "w") as outfile:
