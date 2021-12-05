@@ -22,7 +22,9 @@ def field_popularity(data):
                 field_popularity_dict[field] += 1
             else:
                 field_popularity_dict[field] = 1
-    
+                
+    missing_fields = sum(field_popularity_dict.values())/len(field_popularity_dict.values())
+
     for index, i_paper in data.iterrows():
         fields = i_paper['fields_of_study']
         field_list = []
@@ -31,7 +33,7 @@ def field_popularity(data):
         if len(field_list) != 0:
             most_popular = max(field_list)
         else:
-            most_popular = math.nan
+            most_popular = int(missing_fields)
         field_freq[index,] = most_popular
 
     return field_freq
