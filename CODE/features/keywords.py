@@ -1,11 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 def best_keywords (data, words_per_paper, paper_quantile):
-    import yake as yake
+    import yake
     # take the most highly cited papers from data set
     a = data['citations'].quantile(q = paper_quantile)
     best = data[data['citations'] > a]
