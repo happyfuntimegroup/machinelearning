@@ -30,6 +30,9 @@ from CODE.features.topic_variety import topics_variety
 from CODE.features.topic_popularity import topic_popularity
 from CODE.features.topic_citations_avarage import topic_citations_avarage
 
+# features based on the abstract of the paper
+from CODE.features.keywords import best_keywords
+
 # features based on the venue of the paper
 from CODE.features.venue_popularity import venue_popularity
 from CODE.features.venue_citations import venues_citations
@@ -98,24 +101,21 @@ data.loc[data['topics'].isnull(), 'topics'] = ""
         #       If venue not known, do something else?
     
 ##########################################
-#       New variable, to add onto        #
+#       Create basic numeric df          #
 ##########################################
 end = len(data)
 num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
 
 
+##########################################
+#            Feature creation            #
+##########################################
 """
 FEATURE DATAFRAME: num_X
 
 ALL: After writing a funtion to create a feature, please incorporate your new feature as a column on the dataframe below.
 This is the dataframe we will use to train the models.
-"""
 
-##########################################
-#            Feature creation            #
-##########################################
-#### Add series of data to dataframe
-"""
 DO NOT change the order in this section if at all possible
 """
 num_X['title_length'] = length_title(data)      # returns a numbered series
@@ -142,7 +142,9 @@ num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered
 END do not reorder
 """
 
-### Deal with specific missing values
+##########################################
+#    Deal with specific missing values   #
+##########################################
 # Open_access, thanks to jreback (27th of July 2016) https://github.com/pandas-dev/pandas/issues/13809
 OpAc_by_venue = num_X.groupby('venue').open_access.apply(lambda x: x.mode()) # Take mode for each venue
 OpAc_by_venue = OpAc_by_venue.to_dict()
@@ -160,6 +162,11 @@ for i, i_paper in missing_OpAc.iterrows():
 num_X = num_X.drop(['venue', 'doi'], axis = 1)
 num_X = num_X.dropna()
 
+
+##########################################
+#            Train/val split             #
+##########################################
+
 ## train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 
@@ -167,6 +174,10 @@ X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 """
 INSERT outlier detection on X_train here - ALBERT
 """
+
+##########################################
+#            Outlier detection           #
+##########################################
 ### MODEL code for outlier detection
 ### names: X_train, X_val, y_train, y_val
 
@@ -189,6 +200,10 @@ y_train = y_train.drop(labels = out_rows)
 
 # Potential features to get rid of: team_sz
 
+
+##########################################
+#         Model implementations          #
+##########################################
 """
 IMPLEMENT regression models fuctions here
 - exponential
