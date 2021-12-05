@@ -122,7 +122,7 @@ DO NOT change the order in this section if at all possible
 num_X['title_length'] = length_title(data)      # returns a numbered series
 num_X['field_variety'] = field_variety(data)    # returns a numbered series 
 num_X['field_popularity'] = field_popularity(data) # returns a numbered series
-#num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
+num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
 num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
@@ -131,14 +131,18 @@ num_X['venue_popularity'], num_X['venue'] = venue_popularity(data)  # returns a 
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
-best_keywords(data, 3, .95)  # from [data set] get [integer] keywords from papers in the top [citation rate]; returns list
-#keywords = ["method", "review", "randomized", "random control"]
-num_X['has_keyword'] = abst_words(data, keywords)   #returns a numbered series: 1 if any of the words is present in the abstract, else 0
+keywords = best_keywords(data, 3, 0.95)    # from [data set] get [integer] keywords from papers in the top [citation rate]; returns list
+num_X['has_keyword'] = abst_words(data, keywords)#returns a numbered series: 1 if any of the words is present in the abstract, else 0
 
 # Author H-index
 author_db, reformatted_authors = author_database(data)
 data['authors'] = reformatted_authors
 num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
+
+field_avg_cit = num_X.groupby('field_variety').citations.mean()
+for field, field_avg in zip(field_avg_cit.index, field_avg_cit):
+    num_X.loc[num_X['field_variety'] == field, 'field_cit'] = field_avg
+
 
 """
 END do not reorder
@@ -161,7 +165,7 @@ for i, i_paper in missing_OpAc.iterrows():
         num_X.loc[index,'open_access'] = num_X.open_access.mode()[0] # Thanks to BENY (2nd of February, 2018) https://stackoverflow.com/questions/48590268/pandas-get-the-most-frequent-values-of-a-column
 
 ### Drop columns containing just strings
-num_X = num_X.drop(['venue', 'doi'], axis = 1)
+num_X = num_X.drop(['venue', 'doi', 'field_variety'], axis = 1)
 num_X = num_X.dropna()
 
 
@@ -210,6 +214,15 @@ y_train = y_train.drop(labels = out_rows)
 IMPLEMENT regression models fuctions here
 - exponential
 """
+
+#model.fit(X_train, y_train)
+#print('Best score: ', model.best_score_)
+#print('Best parameters: ', model.best_params_)
+#y_pred = model.predict(X_val)
+
+#from sklearn.metrics import r2_score
+#print(r2_score(y_val,y_pred))
+
 
 # import json
 #with open("sample.json", "w") as outfile:
