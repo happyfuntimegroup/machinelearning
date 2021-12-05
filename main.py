@@ -8,7 +8,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from scipy.stats import pearsonr
 
 ##########################################
 #      Import self-made functions        #
@@ -93,7 +93,7 @@ data.loc[data['references'].isnull(), 'references'] = ""
 data.loc[data['topics'].isnull(), 'topics'] = ""
 
 # Missing values for feature 'is_open_access'
-data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "" 
+#data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "" 
         #   Take most frequent occurrence for venue
         #       If venue not known, do something else?
     
@@ -121,11 +121,11 @@ DO NOT change the order in this section if at all possible
 num_X['title_length'] = length_title(data)      # returns a numbered series
 num_X['field_variety'] = field_variety(data)    # returns a numbered series 
 num_X['field_popularity'] = field_popularity(data) # returns a numbered series
-num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
+#num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
 num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
-num_X['topic_citations_avarage'] = topic_citations_avarage(data) # returns a numbered series
+#num_X['topic_citations_avarage'] = topic_citations_avarage(data) # returns a numbered series
 num_X['venue_popularity'], num_X['venue'] = venue_popularity(data)  # returns a numbered series and a pandas.Series of the 'venues' column reformatted 
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
@@ -142,9 +142,23 @@ num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered
 END do not reorder
 """
 
+### Deal with specific missing values
+# Open_access, thanks to jreback (27th of July 2016) https://github.com/pandas-dev/pandas/issues/13809
+OpAc_by_venue = num_X.groupby('venue').open_access.apply(lambda x: x.mode()) # Take mode for each venue
+OpAc_by_venue = OpAc_by_venue.to_dict()
+missing_OpAc = num_X.loc[num_X['open_access'].isnull(),]
+for i, i_paper in missing_OpAc.iterrows():
+    venue = i_paper['venue']
+    doi = i_paper['doi']
+    index = num_X[num_X['doi'] == doi].index[0]
+    if venue in OpAc_by_venue.keys():   # If a known venue, append the most frequent value for that venue
+        num_X[num_X['doi'] == doi]['open_access'] = OpAc_by_venue[venue] # Set most frequent occurrence 
+    else:                               # Else take most occurring value in entire dataset
+        num_X.loc[index,'open_access'] = num_X.open_access.mode()[0] # Thanks to BENY (2nd of February, 2018) https://stackoverflow.com/questions/48590268/pandas-get-the-most-frequent-values-of-a-column
+
 ### Drop columns containing just strings
 num_X = num_X.drop(['venue', 'doi'], axis = 1)
-
+num_X = num_X.dropna()
 
 ## train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
@@ -158,25 +172,53 @@ INSERT outlier detection on X_train here - ALBERT
 
 # print(list(X_train.columns))
 
-# out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
-# out_X = (find_outliers_tukey(x = X_train['team_size'], top = 99, bottom = 0))[0]
-# out_rows = out_y + out_X
-# out_rows = sorted(list(set(out_rows)))
+out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
+out_X = (find_outliers_tukey(x = X_train['team_sz'], top = 99, bottom = 0))[0]
+out_rows = out_y + out_X
+out_rows = sorted(list(set(out_rows)))
 
 # print("X_train:")
 # print(X_train.shape)
-# X_train = X_train.drop(labels = out_rows)
+X_train = X_train.drop(labels = out_rows)
 # print(X_train.shape)
 # print()
 # print("y_train:")
 # print(y_train.shape)
-# y_train = y_train.drop(labels = out_rows)
+y_train = y_train.drop(labels = out_rows)
 # print(y_train.shape)
+
+# Potential features to get rid of: team_sz
 
 """
 IMPLEMENT regression models fuctions here
 - exponential
 """
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV
+from sklearn.decomposition import PCA
+  
+pipe = Pipeline(steps = [
+    ('scale', StandardScaler()),
+    ('pca', PCA()),
+    ('model', KNeighborsRegressor(n_neighbors = 1, weights = 'uniform', p = 1))
+    ])
+
+model = GridSearchCV(estimator = pipe,
+                      param_grid = {'pca__n_components': list(range(1,X_train.shape[1])),
+                                    'model__n_neighbors': list(range(1,10)),
+                                    'model__weights': ['uniform', 'distance'],
+                                    'model__p': [1,2]},
+                      cv = 3)
+model.fit(X_train, y_train)
+print('Best score: ', model.best_score_)
+print('Best parameters: ', model.best_params_)
+
+y_pred = model.predict(X_val)
+
+from sklearn.metrics import r2_score
+print(r2_score(y_val, y_pred))
 
 # import json
 #with open("sample.json", "w") as outfile:
