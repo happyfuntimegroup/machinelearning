@@ -121,7 +121,7 @@ DO NOT change the order in this section if at all possible
 num_X['title_length'] = length_title(data)      # returns a numbered series
 num_X['field_variety'] = field_variety(data)    # returns a numbered series 
 num_X['field_popularity'] = field_popularity(data) # returns a numbered series
-#num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
+num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
 num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
@@ -172,19 +172,19 @@ INSERT outlier detection on X_train here - ALBERT
 
 # print(list(X_train.columns))
 
-out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
-out_X = (find_outliers_tukey(x = X_train['team_sz'], top = 99, bottom = 0))[0]
-out_rows = out_y + out_X
-out_rows = sorted(list(set(out_rows)))
+# out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
+# out_X = (find_outliers_tukey(x = X_train['team_sz'], top = 99, bottom = 0))[0]
+# out_rows = out_y + out_X
+# out_rows = sorted(list(set(out_rows)))
 
 # print("X_train:")
 # print(X_train.shape)
-X_train = X_train.drop(labels = out_rows)
+# X_train = X_train.drop(labels = out_rows)
 # print(X_train.shape)
 # print()
 # print("y_train:")
 # print(y_train.shape)
-y_train = y_train.drop(labels = out_rows)
+# y_train = y_train.drop(labels = out_rows)
 # print(y_train.shape)
 
 # Potential features to get rid of: team_sz
@@ -193,7 +193,24 @@ y_train = y_train.drop(labels = out_rows)
 IMPLEMENT regression models fuctions here
 - exponential
 """
+from sklearn.linear_model import LinearRegression
+
+
+lr = LinearRegression()
+model = lr.fit(X_train, y_train)
+y_pred = lr.predict(X_val)
+
+# print(y_pred)
+# print(y_train)
+r_sq = model.score(X_val, y_val)
+print('coefficient of determination:', r_sq)
+
+from sklearn.svm import SVC
+svc = SVC()
+model1 = svc.fit(X_train, np.ravel(y_train))
+r_sq1 = model1.score(X_val, y_val)
+print('coefficient of determination:', r_sq1)
 
 # import json
-#with open("sample.json", "w") as outfile:
-    #json.dump(dictionary, outfile)
+#with open("output.json", "w") as outfile:
+    #json.dump(num_X, outfile)
