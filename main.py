@@ -193,32 +193,6 @@ y_train = y_train.drop(labels = out_rows)
 IMPLEMENT regression models fuctions here
 - exponential
 """
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
-from sklearn.model_selection import GridSearchCV
-from sklearn.decomposition import PCA
-  
-pipe = Pipeline(steps = [
-    ('scale', StandardScaler()),
-    ('pca', PCA()),
-    ('model', KNeighborsRegressor(n_neighbors = 1, weights = 'uniform', p = 1))
-    ])
-
-model = GridSearchCV(estimator = pipe,
-                      param_grid = {'pca__n_components': list(range(1,X_train.shape[1])),
-                                    'model__n_neighbors': list(range(1,10)),
-                                    'model__weights': ['uniform', 'distance'],
-                                    'model__p': [1,2]},
-                      cv = 3)
-model.fit(X_train, y_train)
-print('Best score: ', model.best_score_)
-print('Best parameters: ', model.best_params_)
-
-y_pred = model.predict(X_val)
-
-from sklearn.metrics import r2_score
-print(r2_score(y_val, y_pred))
 
 # import json
 #with open("sample.json", "w") as outfile:
