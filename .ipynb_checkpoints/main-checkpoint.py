@@ -33,13 +33,14 @@ from CODE.features.topic_citations_avarage import topic_citations_avarage
 
 # features based on the abstract of the paper
 from CODE.features.keywords import best_keywords
+from CODE.features.abst_words import abst_words
+from CODE.features.abst_words import abst_count
 
 # features based on the venue of the paper
 from CODE.features.venue_popularity import venue_popularity
 from CODE.features.venue_citations import venues_citations
 
 from CODE.features.age import age
-from CODE.features.abst_words import abst_words
 
 # features based on the authors of the paper
 from CODE.features.author_h_index import author_h_index
