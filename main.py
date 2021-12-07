@@ -198,18 +198,16 @@ out_rows = out_y
 # out_rows = out_y + out_X
 
 out_rows = sorted(list(set(out_rows)))
-
-# print("X_train:")
-# print(X_train.shape)
 X_train = X_train.drop(labels = out_rows)
-# print(X_train.shape)
-# print()
-# print("y_train:")
-# print(y_train.shape)
 y_train = y_train.drop(labels = out_rows)
-# print(y_train.shape)
 
-# Potential features to get rid of: team_sz
+num_X = num_X[num_X['references'] < 500]
+num_X = num_X[num_X['team_sz'] < 40]
+num_X = num_X[num_X['topic_var'] < 60]
+num_X = num_X[num_X['venPresL'] < 300]
+num_X = num_X[num_X['h_index'] < 30]
+
+# Potential features to get rid of: team_sz; year and age are perfect correlates
 
 
 ##########################################
@@ -224,14 +222,7 @@ NOTE: Please do not write over X_train, X_val, y_train, y_val in your model - ma
 
 #-----------simple regression, all columns
 """
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score, mean_absolute_error
-
-model = LinearRegression()
-reg = model.fit(X = X_train, y = y_train)
-y_pred_val = model.predict(X_val)
-print(r2_score(y_val, y_pred_val))
-print(mean_absolute_error(y_val, y_pred_val))
+simple_linear(X_train, y_train, X_val, y_val)
 
 MODEL RESULTS:
 R2: 0.03724
@@ -239,18 +230,7 @@ MSE: 33.38996
 """
 #-----------logistic regression, all columns
 """
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-
-scaler = StandardScaler()
-X_train_s = scaler.fit_transform(X_train)
-X_val_s = scaler.transform(X_val)
-
-y_ravel = np.ravel(y_train)
-
-model = LogisticRegression(random_state = 123, max_iter = 2000)
-reg = model.fit(X = X_train_s, y = y_ravel)
-y_pred_val = model.predict(X_val_s)
+log_reg(X_train, y_train, X_val, y_val)
 
 MODEL RESULTS:
 R2: 0.006551953988217396

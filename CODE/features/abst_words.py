@@ -23,6 +23,7 @@ def abst_words (the_data, keywords):
     return pd.Series(abst_key)
 
 def abst_count (the_data, keywords):
+    import pandas as pd
     abst = the_data['abstract']
     abst_key = []    
     
