@@ -233,6 +233,10 @@ from CODE.models.regression import log_reg
 from CODE.models.regression import sdg_reg
 from CODE.models.regression import poly_reg
 from CODE.models.regression import pois_reg
+from CODE.models.non_linear import de_tree_reg
+from CODE.models.non_linear import kn_reg
+from CODE.models.non_linear import my_svr
+from CODE.models.non_linear import mlp_reg
 """
 IMPLEMENT models here: to run a model, delete the # and run
 NOTE: Please do not modify X_train, X_val, y_train, y_val in your model - make new variables if needed
@@ -270,15 +274,18 @@ loss in ['squared_error', 'huber']:
 """
 
 #-----------polynomial regression, all columns
-#poly_reg (X_train, y_train, X_val, y_val)
+#poly_reg (X_train, y_train, X_val, y_val, 3)
 
 """
 MODEL RESULTS:
-I... WTF: r2: -11338692776551.178
+r2: -0.05109 (degree = 2)
+r2: -0.0378 (degree = 3)
+r2: -5.5816 (degree = 4)
+MAE 35.1660
 """
 
-#-----------polynomial regression, all columns
-pois_reg (X_train, y_train, X_val, y_val)
+#-----------poisson regression, all columns
+#pois_reg (X_train, y_train, X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -286,7 +293,7 @@ r2: 0.022145
 MAE: 39.21127
 """
 
-#-----------simple linear regression, dropping columns columns
+#-----------simple linear regression, dropping columns
 
 """
 USE this code to run one of the simple regression models, successively dropping one column
@@ -307,6 +314,49 @@ For a baseline, run the corresponding model above
     
 #     #simple_linear(X_train_small, y_train, X_val_small, y_val)  #dropping venue_popularity helps a tiny bit
 #     #log_reg(X_train_small, y_train, X_val_small, y_val)
+
+
+#----------- Random Forrest for Regression
+#de_tree_reg (X_train, y_train, X_val, y_val, 50)
+
+"""
+MODEL RESULTS:
+r2: 0.006518029337933218  depth = 2
+r2: 0.010480933407271853  depth = 3
+r2: 0.013140361155744351  depth = 4
+r2: 0.02475733890010956   depth = 10
+r2: 0.027754095018432956  depth = 20
+r2: 0.028205843489561455  depth = 30
+r2: 0.02787632669251372  depth = 50
+"""
+
+#----------- K-Neighbors for Regression
+#kn_reg (X_train, y_train, X_val, y_val, neighbors = 20, algorithm = 'auto', leaf_sz = 30)
+"""
+OPTIONS:
+algorithm = 'auto', 'ball_tree', 'kd_tree', 'brute'
+DEFAULT values: neighbors = 5, algorithm = 'auto', leaf_sz = 30
+
+MODEL RESULTS:
+r2: 0.0020787461461421186  neighbors = 2
+r2: 0.0036641038448516072  neighbors = 3
+r2: 0.012151620462786172   neighbors = 10
+r2: 0.012527572947568677   neighbors = 20
+"""
+
+#-----------  Multi-layer Perceptron for Regression
+mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant') 
+"""
+OPTIONS:
+activation= 'identity', 'logistic', 'tanh', 'relu'
+solver= 'lbfgs', 'sgd', 'adam'
+lr= 'constant', 'invscaling', 'adaptive'
+DEFAULT values: maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant'
+
+MODEL RESULTS:
+r2: 0.005729150866153665
+score: 0.005729150866153665
+"""
 
 
 #----------- Odds and Ends

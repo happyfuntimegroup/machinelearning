@@ -56,10 +56,11 @@ def sdg_reg (X_train, y_train, X_val, y_val):
                 settings.append((learning_rate, eta0, loss, mae, r2))
                 print(settings[-1])
 
-def poly_reg (X_train, y_train, X_val, y_val):
+def poly_reg (X_train, y_train, X_val, y_val, degree):
     import numpy as np
     from sklearn.preprocessing import PolynomialFeatures
-    from sklearn.linear_model import LinearRegression
+    #from sklearn.linear_model import LinearRegression   
+    from sklearn.linear_model import Ridge # Try this with ridge instead?
     from sklearn.preprocessing import StandardScaler
     from sklearn.metrics import r2_score, mean_absolute_error
 
@@ -67,11 +68,12 @@ def poly_reg (X_train, y_train, X_val, y_val):
     X_train_z = scaler.fit_transform(X_train)
     X_val_z  =scaler.transform(X_val)
 
-    polynomial_features = PolynomialFeatures(degree = 2)
+    polynomial_features = PolynomialFeatures(degree = degree)
     x_train_poly = polynomial_features.fit_transform(X_train_z)
     x_val_poly = polynomial_features.transform(X_val_z)
 
-    model = LinearRegression()
+    #model = LinearRegression()
+    model = Ridge(alpha = 1.0)
     reg = model.fit(x_train_poly, y_train)
     y_poly_pred = reg.predict(x_val_poly)
 
@@ -90,8 +92,10 @@ def pois_reg (X_train, y_train, X_val, y_val):
     X_train_s = scaler.fit_transform(X_train)
     X_val_s = scaler.transform(X_val)
 
+    y_ravel = np.ravel(y_train)
+
     model = PoissonRegressor()
-    reg = model.fit(X = X_train_s, y = y_train)
+    reg = model.fit(X = X_train_s, y = y_ravel)
     y_pred_val = reg.predict(X_val_s)
 
     print('r2:', r2_score(y_val, y_pred_val))
