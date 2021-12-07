@@ -1,3 +1,8 @@
+"""
+Input: data, integer, float between 0 and 1, float between 0 and 1
+Output: a list of all unique keywords that were generated from qualifying papers
+"""
+
 def best_keywords (data, words_per_paper, lower_bound, upper_bound):
     import yake
     # take the most highly cited papers from data set

@@ -3,7 +3,12 @@
 
 # In[ ]:
 
-
+"""
+Input: dataframe, list of keywords
+Output: panda series
+abst_words returns a series of booleans: was any one of the keywords in that paper's abstract
+abst_count returns a series of integers: how many of the keywords were in that paper's abstract
+"""
 def abst_words (the_data, keywords):
     import pandas as pd
     

@@ -184,7 +184,7 @@ num_X = num_X.drop(['venue', 'doi', 'field_variety'], axis = 1)
 
 
 ##########################################
-#           Outlier detection 1          #
+#    Outlier detection 1: threshold      #
 ##########################################
 # 9658 rows in the full num_X
 # 9494 rows with all turned on
@@ -195,7 +195,8 @@ num_X = num_X[num_X['topic_var'] < 60]
 num_X = num_X[num_X['venPresL'] < 300]
 num_X = num_X[num_X['h_index'] < 30]
 
-# %store num_X
+#%store num_X
+
 ##########################################
 #            Train/val split             #
 ##########################################
@@ -204,7 +205,7 @@ X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 
 
 ##########################################
-#           Outlier detection 2          #
+#     Outlier detection 2: Quantile      #
 ##########################################
 ### MODEL code for outlier detection
 ### names: X_train, X_val, y_train, y_val
@@ -227,85 +228,54 @@ y_train = y_train.drop(labels = out_rows)
 ##########################################
 #         Model implementations          #
 ##########################################
-"""
-IMPLEMENT models here
-NOTE: Please do not write over X_train, X_val, y_train, y_val in your model - make new variables if needed
-"""
-
 from CODE.models.regression import simple_linear
 from CODE.models.regression import log_reg
 from CODE.models.regression import sdg_reg
+from CODE.models.regression import poly_reg
+
+"""
+IMPLEMENT models here
+NOTE: Please do not modify X_train, X_val, y_train, y_val in your model - make new variables if needed
+"""
 
 #-----------simple regression, all columns
-"""
-simple_linear(X_train, y_train, X_val, y_val)
+#simple_linear(X_train, y_train, X_val, y_val)
 
+"""
 MODEL RESULTS:
-R2: 0.03724
+R2: 0.03724  
 MSE: 33.38996
+# Worse after extra outlier removal (0.015478)
 """
 #-----------logistic regression, all columns
-"""
-log_reg(X_train, y_train, X_val, y_val)
+#log_reg(X_train, y_train, X_val, y_val)
 
+"""
 MODEL RESULTS:
 R2: 0.006551953988217396
 MSE: 34.07342328208346
+# Worse after extra outlier removal (-0.00156)
 """
 #-----------SGD regression, all columns
-"""
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import SGDRegressor
+#sdg_reg (X_train, y_train, X_val, y_val)
 
-scaler = StandardScaler()
-X_train_z = scaler.fit_transform(X_train)
-X_val_z  =scaler.transform(X_val)
-y_ravel = np.ravel(y_train)
+"""
 lr = [ 1, .1, .01, .001, .0001]
-settings = []
-for learning_rate in ['constant', 'optimal', 'invscaling']:
-    for loss in ['squared_error', 'huber']:
-        for eta0 in lr:
-            model = SGDRegressor(learning_rate=learning_rate, eta0=eta0, loss=loss,random_state=666, max_iter=5000)
-            model.fit(X_train_z, y_ravel)
-            y_pred = model.predict(X_val_z)
-            
-            mae = mean_absolute_error(y_val, y_pred)
-            r2 =  r2_score(y_val, y_pred)
-            settings.append((learning_rate, eta0, loss, mae, r2))
-            print(settings[-1])
+learning_rate in ['constant', 'optimal', 'invscaling']:
+loss in ['squared_error', 'huber']:
 
 # MODEL RESULTS:
-# Best outcome: ('constant', 0.01, 'squared_error', 35.74249957361433, 0.04476790061780822)
+# Best outcome, before extra outlier removal: ('constant', 0.01, 'squared_error', 35.74249957361433, 0.04476790061780822)
+# Best outcome after extra outlier removal: ('constant', 0.01, 'squared_error', 37.08290449479669, 0.019303736163186702)
 """
 
 #-----------polynomial regression, all columns
+poly_reg (X_train, y_train, X_val, y_val)
+
 """
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.preprocessing import StandardScaler
-
-scaler = StandardScaler()
-X_train_z = scaler.fit_transform(X_train)
-X_val_z  =scaler.transform(X_val)
-
-polynomial_features = PolynomialFeatures(degree = 2)
-x_train_poly = polynomial_features.fit_transform(X_train_z)
-x_val_poly = polynomial_features.transform(X_val_z)
-
-model = LinearRegression()
-model.fit(x_train_poly, y_train)
-y_poly_pred = model.predict(x_val_poly)
-
-print(r2_score(y_val, y_poly_pred))   # -0.04350391168707901
-print(mean_absolute_error(y_val, y_poly_pred))    # 32.65668266590838
-
-source: https://towardsdatascience.com/polynomial-regression-bbe8b9d97491
+# MODEL RESULTS:
+I... WTF: r2: -11338692776551.178
 """
-
-
-
-
-
 #model.fit(X_train, y_train)
 #print('Best score: ', model.best_score_)
 #print('Best parameters: ', model.best_params_)

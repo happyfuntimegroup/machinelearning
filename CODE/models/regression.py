@@ -5,8 +5,8 @@ def simple_linear(X_train, y_train, X_val, y_val):
     model = LinearRegression()
     reg = model.fit(X = X_train, y = y_train)
     y_pred_val = model.predict(X_val)
-    print(r2_score(y_val, y_pred_val))
-    print(mean_absolute_error(y_val, y_pred_val))
+    print("r2:", r2_score(y_val, y_pred_val))
+    print("MAE:", mean_absolute_error(y_val, y_pred_val))
     print()
     
     #return r2, mae
@@ -33,8 +33,10 @@ def log_reg(X_train, y_train, X_val, y_val):
     print()
     
 def sdg_reg (X_train, y_train, X_val, y_val):
+    import numpy as np
     from sklearn.preprocessing import StandardScaler
     from sklearn.linear_model import SGDRegressor
+    from sklearn.metrics import r2_score, mean_absolute_error
 
     scaler = StandardScaler()
     X_train_z = scaler.fit_transform(X_train)
@@ -53,3 +55,27 @@ def sdg_reg (X_train, y_train, X_val, y_val):
                 r2 =  r2_score(y_val, y_pred)
                 settings.append((learning_rate, eta0, loss, mae, r2))
                 print(settings[-1])
+
+def poly_reg (X_train, y_train, X_val, y_val):
+    import numpy as np
+    from sklearn.preprocessing import PolynomialFeatures
+    from sklearn.linear_model import LinearRegression
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import r2_score, mean_absolute_error
+
+    scaler = StandardScaler()
+    X_train_z = scaler.fit_transform(X_train)
+    X_val_z  =scaler.transform(X_val)
+
+    polynomial_features = PolynomialFeatures(degree = 2)
+    x_train_poly = polynomial_features.fit_transform(X_train_z)
+    x_val_poly = polynomial_features.transform(X_val_z)
+
+    model = LinearRegression()
+    model.fit(x_train_poly, y_train)
+    y_poly_pred = model.predict(x_val_poly)
+
+    print("r2:", r2_score(y_val, y_poly_pred))   # -0.04350391168707901
+    print("MAE", mean_absolute_error(y_val, y_poly_pred))    # 32.65668266590838
+
+    #source: https://towardsdatascience.com/polynomial-regression-bbe8b9d97491
