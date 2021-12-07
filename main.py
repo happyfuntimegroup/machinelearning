@@ -162,13 +162,25 @@ for i, i_paper in missing_OpAc.iterrows():
     doi = i_paper['doi']
     index = num_X[num_X['doi'] == doi].index[0]
     if venue in OpAc_by_venue.keys():   # If a known venue, append the most frequent value for that venue
-        num_X[num_X['doi'] == doi]['open_access'] = OpAc_by_venue[venue] # Set most frequent occurrence 
+        num_X.loc[index,'open_access'] = OpAc_by_venue[venue] # Set most frequent occurrence 
     else:                               # Else take most occurring value in entire dataset
         num_X.loc[index,'open_access'] = num_X.open_access.mode()[0] # Thanks to BENY (2nd of February, 2018) https://stackoverflow.com/questions/48590268/pandas-get-the-most-frequent-values-of-a-column
 
+# Year
+year_by_venue = num_X.groupby('venue').year.apply(lambda x: x.mean()) # Take mean for each venue
+year_by_venue = year_by_venue.to_dict()
+missing_year = num_X.loc[num_X['year'].isnull(),]
+for i, i_paper in missing_year.iterrows():
+    venue = i_paper['venue']
+    doi = i_paper['doi']
+    index = num_X[num_X['doi'] == doi].index[0]
+    if venue in year_by_venue.keys():   # If a known venue, append the mean value for that venue
+        num_X.loc[index, 'year'] = year_by_venue[venue] # Set mean publication year
+    else:                               # Else take mean value of entire dataset
+        num_X.loc[index,'year'] = num_X.year.mean()
+      
 ### Drop columns containing just strings
 num_X = num_X.drop(['venue', 'doi', 'field_variety'], axis = 1)
-num_X = num_X.dropna()
 
 
 ##########################################
