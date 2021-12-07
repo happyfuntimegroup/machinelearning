@@ -201,11 +201,17 @@ out_rows = sorted(list(set(out_rows)))
 X_train = X_train.drop(labels = out_rows)
 y_train = y_train.drop(labels = out_rows)
 
-num_X = num_X[num_X['references'] < 500]
-num_X = num_X[num_X['team_sz'] < 40]
-num_X = num_X[num_X['topic_var'] < 60]
-num_X = num_X[num_X['venPresL'] < 300]
-num_X = num_X[num_X['h_index'] < 30]
+X_train = X_train[X_train['references'] < 500]
+X_train = X_train[X_train['team_sz'] < 40]
+X_train = X_train[X_train['topic_var'] < 60]
+X_train = X_train[X_train['venPresL'] < 300]
+X_train = X_train[X_train['h_index'] < 30]
+
+y_train = y_train[y_train['references'] < 500]
+y_train = y_train[y_train['team_sz'] < 40]
+y_train = y_train[y_train['topic_var'] < 60]
+y_train = y_train[y_train['venPresL'] < 300]
+y_train = y_train[y_train['h_index'] < 30]
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
 
