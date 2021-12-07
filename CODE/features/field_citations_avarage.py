@@ -30,12 +30,12 @@ def field_citations_avarage(data):
     missing_fields = data[data['fields_of_study'].str.len() == 0].citations.mean()
 
     for index, i_paper in data.iterrows(): # iterate over the dataframe 
-        fields = i_paper['fields'] # check all the topics for one paper
+        fields = i_paper['fields_of_study'] # check all the topics for one paper
         all_the_citations = [] # create empty list to keep track of all the citations for all the topics
         if len(fields) != 0:
-            for topic in fields:
-                if topic in fields_dict.keys():
-                    all_the_citations += fields_dict[topic] #add citations list of each field to bigger list
+            for field in fields:
+                if field in fields_dict.keys():
+                    all_the_citations += fields_dict[field] #add citations list of each field to bigger list
         else:
             all_the_citations = [missing_fields]
 
