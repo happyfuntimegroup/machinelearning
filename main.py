@@ -276,6 +276,35 @@ poly_reg (X_train, y_train, X_val, y_val)
 # MODEL RESULTS:
 I... WTF: r2: -11338692776551.178
 """
+
+#-----------simple linear regression, dropping columns columns
+
+"""
+USE this code to run one of the simple regression models, successively dropping one column
+To run, unhash the full function, then unhash the specific model
+For a baseline, run the corresponding model above
+"""
+summaries = list(X_train.columns)
+print(summaries)
+
+# for i in range(len(summaries)):
+#     X_train_small = X_train.copy()
+#     X_val_small = X_val.copy()
+#     drops = summaries[i]
+#     X_train_small.drop(drops, inplace = True, axis=1)
+#     X_val_small.drop(drops, inplace = True, axis=1)
+
+#     print("dropped:", summaries[i])
+    
+#     #simple_linear(X_train_small, y_train, X_val_small, y_val)  #dropping venue_popularity helps a tiny bit
+#     #log_reg(X_train_small, y_train, X_val_small, y_val)
+
+
+
+
+
+
+
 #model.fit(X_train, y_train)
 #print('Best score: ', model.best_score_)
 #print('Best parameters: ', model.best_params_)
