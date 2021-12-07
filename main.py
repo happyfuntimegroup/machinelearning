@@ -195,7 +195,7 @@ num_X = num_X[num_X['topic_var'] < 60]
 num_X = num_X[num_X['venPresL'] < 300]
 num_X = num_X[num_X['h_index'] < 30]
 
-%store num_X
+# %store num_X
 ##########################################
 #            Train/val split             #
 ##########################################
