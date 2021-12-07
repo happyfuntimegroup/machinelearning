@@ -123,7 +123,7 @@ DO NOT change the order in this section if at all possible
 num_X['title_length'] = length_title(data)      # returns a numbered series
 num_X['field_variety'] = field_variety(data)    # returns a numbered series 
 num_X['field_popularity'] = field_popularity(data) # returns a numbered series
-# num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
+num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
 num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
@@ -162,13 +162,38 @@ for i, i_paper in missing_OpAc.iterrows():
     doi = i_paper['doi']
     index = num_X[num_X['doi'] == doi].index[0]
     if venue in OpAc_by_venue.keys():   # If a known venue, append the most frequent value for that venue
-        num_X[num_X['doi'] == doi]['open_access'] = OpAc_by_venue[venue] # Set most frequent occurrence 
+        num_X.loc[index,'open_access'] = OpAc_by_venue[venue] # Set most frequent occurrence 
     else:                               # Else take most occurring value in entire dataset
         num_X.loc[index,'open_access'] = num_X.open_access.mode()[0] # Thanks to BENY (2nd of February, 2018) https://stackoverflow.com/questions/48590268/pandas-get-the-most-frequent-values-of-a-column
 
+# Year
+year_by_venue = num_X.groupby('venue').year.apply(lambda x: x.mean()) # Take mean for each venue
+year_by_venue = year_by_venue.to_dict()
+missing_year = num_X.loc[num_X['year'].isnull(),]
+for i, i_paper in missing_year.iterrows():
+    venue = i_paper['venue']
+    doi = i_paper['doi']
+    index = num_X[num_X['doi'] == doi].index[0]
+    if venue in year_by_venue.keys():   # If a known venue, append the mean value for that venue
+        num_X.loc[index, 'year'] = year_by_venue[venue] # Set mean publication year
+    else:                               # Else take mean value of entire dataset
+        num_X.loc[index,'year'] = num_X.year.mean()
+      
 ### Drop columns containing just strings
 num_X = num_X.drop(['venue', 'doi', 'field_variety'], axis = 1)
-num_X = num_X.dropna()
+
+
+##########################################
+#           Outlier detection 1          #
+##########################################
+# 9658 rows in the full num_X
+# 9494 rows with all turned on
+
+num_X = num_X[num_X['references'] < 500]
+num_X = num_X[num_X['team_sz'] < 40]
+num_X = num_X[num_X['topic_var'] < 60]
+num_X = num_X[num_X['venPresL'] < 300]
+num_X = num_X[num_X['h_index'] < 30]
 
 
 ##########################################
@@ -184,7 +209,7 @@ INSERT outlier detection on X_train here - ALBERT
 """
 
 ##########################################
-#            Outlier detection           #
+#           Outlier detection 2          #
 ##########################################
 ### MODEL code for outlier detection
 ### names: X_train, X_val, y_train, y_val
@@ -200,18 +225,6 @@ out_rows = out_y
 out_rows = sorted(list(set(out_rows)))
 X_train = X_train.drop(labels = out_rows)
 y_train = y_train.drop(labels = out_rows)
-
-X_train = X_train[X_train['references'] < 500]
-X_train = X_train[X_train['team_sz'] < 40]
-X_train = X_train[X_train['topic_var'] < 60]
-X_train = X_train[X_train['venPresL'] < 300]
-X_train = X_train[X_train['h_index'] < 30]
-
-y_train = y_train[y_train['references'] < 500]
-y_train = y_train[y_train['team_sz'] < 40]
-y_train = y_train[y_train['topic_var'] < 60]
-y_train = y_train[y_train['venPresL'] < 300]
-y_train = y_train[y_train['h_index'] < 30]
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
 

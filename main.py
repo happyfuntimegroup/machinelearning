@@ -184,6 +184,19 @@ num_X = num_X.drop(['venue', 'doi', 'field_variety'], axis = 1)
 
 
 ##########################################
+#           Outlier detection 1          #
+##########################################
+# 9658 rows in the full num_X
+# 9494 rows with all turned on
+
+num_X = num_X[num_X['references'] < 500]
+num_X = num_X[num_X['team_sz'] < 40]
+num_X = num_X[num_X['topic_var'] < 60]
+num_X = num_X[num_X['venPresL'] < 300]
+num_X = num_X[num_X['h_index'] < 30]
+
+
+##########################################
 #            Train/val split             #
 ##########################################
 
@@ -196,7 +209,7 @@ INSERT outlier detection on X_train here - ALBERT
 """
 
 ##########################################
-#            Outlier detection           #
+#           Outlier detection 2          #
 ##########################################
 ### MODEL code for outlier detection
 ### names: X_train, X_val, y_train, y_val
@@ -212,18 +225,6 @@ out_rows = out_y
 out_rows = sorted(list(set(out_rows)))
 X_train = X_train.drop(labels = out_rows)
 y_train = y_train.drop(labels = out_rows)
-
-X_train = X_train[X_train['references'] < 500]
-X_train = X_train[X_train['team_sz'] < 40]
-X_train = X_train[X_train['topic_var'] < 60]
-X_train = X_train[X_train['venPresL'] < 300]
-X_train = X_train[X_train['h_index'] < 30]
-
-y_train = y_train[y_train['references'] < 500]
-y_train = y_train[y_train['team_sz'] < 40]
-y_train = y_train[y_train['topic_var'] < 60]
-y_train = y_train[y_train['venPresL'] < 300]
-y_train = y_train[y_train['h_index'] < 30]
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
 
