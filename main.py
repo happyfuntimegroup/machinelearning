@@ -123,7 +123,7 @@ DO NOT change the order in this section if at all possible
 num_X['title_length'] = length_title(data)      # returns a numbered series
 num_X['field_variety'] = field_variety(data)    # returns a numbered series 
 num_X['field_popularity'] = field_popularity(data) # returns a numbered series
-# num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
+num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
 num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
