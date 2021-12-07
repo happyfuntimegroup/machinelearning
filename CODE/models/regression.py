@@ -4,7 +4,7 @@ def simple_linear(X_train, y_train, X_val, y_val):
 
     model = LinearRegression()
     reg = model.fit(X = X_train, y = y_train)
-    y_pred_val = model.predict(X_val)
+    y_pred_val = reg.predict(X_val)
     print("r2:", r2_score(y_val, y_pred_val))
     print("MAE:", mean_absolute_error(y_val, y_pred_val))
     print()
@@ -26,7 +26,7 @@ def log_reg(X_train, y_train, X_val, y_val):
 
     model = LogisticRegression(random_state = 123, max_iter = 2000)
     reg = model.fit(X = X_train_s, y = y_ravel)
-    y_pred_val = model.predict(X_val_s)
+    y_pred_val = reg.predict(X_val_s)
 
     print('r2:', r2_score(y_val, y_pred_val))   # 0.006551953988217396
     print("MAE:", mean_absolute_error(y_val, y_pred_val))    # 34.07342328208346
@@ -48,8 +48,8 @@ def sdg_reg (X_train, y_train, X_val, y_val):
         for loss in ['squared_error', 'huber']:
             for eta0 in lr:
                 model = SGDRegressor(learning_rate=learning_rate, eta0=eta0, loss=loss,random_state=666, max_iter=5000)
-                model.fit(X_train_z, y_ravel)
-                y_pred = model.predict(X_val_z)
+                reg = model.fit(X_train_z, y_ravel)
+                y_pred = reg.predict(X_val_z)
 
                 mae = mean_absolute_error(y_val, y_pred)
                 r2 =  r2_score(y_val, y_pred)
@@ -72,10 +72,27 @@ def poly_reg (X_train, y_train, X_val, y_val):
     x_val_poly = polynomial_features.transform(X_val_z)
 
     model = LinearRegression()
-    model.fit(x_train_poly, y_train)
-    y_poly_pred = model.predict(x_val_poly)
+    reg = model.fit(x_train_poly, y_train)
+    y_poly_pred = reg.predict(x_val_poly)
 
     print("r2:", r2_score(y_val, y_poly_pred))   # -0.04350391168707901
     print("MAE", mean_absolute_error(y_val, y_poly_pred))    # 32.65668266590838
 
     #source: https://towardsdatascience.com/polynomial-regression-bbe8b9d97491
+
+def pois_reg (X_train, y_train, X_val, y_val):
+    import numpy as np
+    from sklearn.linear_model import PoissonRegressor
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import r2_score, mean_absolute_error
+
+    scaler = StandardScaler()
+    X_train_s = scaler.fit_transform(X_train)
+    X_val_s = scaler.transform(X_val)
+
+    model = PoissonRegressor()
+    reg = model.fit(X = X_train_s, y = y_train)
+    y_pred_val = reg.predict(X_val_s)
+
+    print('r2:', r2_score(y_val, y_pred_val))
+    print("MAE:", mean_absolute_error(y_val, y_pred_val))

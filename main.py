@@ -232,9 +232,9 @@ from CODE.models.regression import simple_linear
 from CODE.models.regression import log_reg
 from CODE.models.regression import sdg_reg
 from CODE.models.regression import poly_reg
-
+from CODE.models.regression import pois_reg
 """
-IMPLEMENT models here
+IMPLEMENT models here: to run a model, delete the # and run
 NOTE: Please do not modify X_train, X_val, y_train, y_val in your model - make new variables if needed
 """
 
@@ -254,7 +254,7 @@ MSE: 33.38996
 MODEL RESULTS:
 R2: 0.006551953988217396
 MSE: 34.07342328208346
-# Worse after extra outlier removal (-0.00156)
+# Worse after extra outlier removal (0.003)
 """
 #-----------SGD regression, all columns
 #sdg_reg (X_train, y_train, X_val, y_val)
@@ -270,11 +270,20 @@ loss in ['squared_error', 'huber']:
 """
 
 #-----------polynomial regression, all columns
-poly_reg (X_train, y_train, X_val, y_val)
+#poly_reg (X_train, y_train, X_val, y_val)
 
 """
-# MODEL RESULTS:
+MODEL RESULTS:
 I... WTF: r2: -11338692776551.178
+"""
+
+#-----------polynomial regression, all columns
+pois_reg (X_train, y_train, X_val, y_val)
+
+"""
+MODEL RESULTS:
+r2: 0.022145
+MAE: 39.21127
 """
 
 #-----------simple linear regression, dropping columns columns
@@ -284,8 +293,8 @@ USE this code to run one of the simple regression models, successively dropping 
 To run, unhash the full function, then unhash the specific model
 For a baseline, run the corresponding model above
 """
-summaries = list(X_train.columns)
-print(summaries)
+# summaries = list(X_train.columns)
+# print(summaries)
 
 # for i in range(len(summaries)):
 #     X_train_small = X_train.copy()
@@ -300,11 +309,7 @@ print(summaries)
 #     #log_reg(X_train_small, y_train, X_val_small, y_val)
 
 
-
-
-
-
-
+#----------- Odds and Ends
 #model.fit(X_train, y_train)
 #print('Best score: ', model.best_score_)
 #print('Best parameters: ', model.best_params_)
