@@ -203,10 +203,6 @@ num_X = num_X[num_X['h_index'] < 30]
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 
 
-"""
-INSERT outlier detection on X_train here - ALBERT
-"""
-
 ##########################################
 #           Outlier detection 2          #
 ##########################################
