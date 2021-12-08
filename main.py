@@ -97,19 +97,19 @@ test['title_length'] = length_title(test)
 num_X['field_variety'] = field_variety(data)    # returns a numbered series with amount of fields
 test['field_variety'] = field_variety(test)    # returns a numbered series with amount of fields
 num_X['field_popularity'], test['field_popularity'] = field_popularity(data, test) # returns a numbered series with 
-num_X['field_citations_avarage'], _  = field_citations_avarage(data, test) # returns a numbered series
+num_X['field_citations_avarage'], test['field_citations_avarage']  = field_citations_avarage(data, test) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 test['team_sz'] = team_size(test)           # returns a numbered series
 num_X['topic_variety'] = topics_variety(data)    # returns a numbered series
 test['topic_variety'] = topics_variety(test)    # returns a numbered series
 num_X['topic_popularity'], test['topic_popularity']= topic_popularity(data, test) # returns a numbered series
-# num_X['topic_citations_avarage'] = topic_citations_avarage(data) # returns a numbered series
+num_X['topic_citations_avarage'], test['topic_citations_avarage'] = topic_citations_avarage(data, test) # returns a numbered series
 num_X['venue_popularity'], num_X['venue'], test['venue_popularity'], test['venue'] = venue_popularity(data, test)  # returns a numbered series and a pandas.Series of the 'venues' column reformatted 
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 test['open_access'] = pd.get_dummies(test["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 test['age'] = age(test)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
-# num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
+num_X['venPresL'], test['venPresL'] = venues_citations(data, test)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 keywords = best_keywords(data, 1, 0.954, 0.955)    # from [data set] get [integer] keywords from papers btw [lower bound] and [upper bound] quantiles; returns list
 num_X['has_keyword'] = abst_words(data, keywords)#returns a numbered series: 1 if any of the words is present in the abstract, else 0
 test['has_keyword'] = abst_words(test, keywords)#returns a numbered series: 1 if any of the words is present in the abstract, else 0
@@ -121,10 +121,6 @@ author_db, data['authors'] = author_database(data)
 _, test['authors'] = author_database(test) # reformatting authors name from test database
 num_X['h_index'], test['h_index'] = paper_h_index(data, author_citation_dic, test) # Returns a numbered series. Must come after author names have been reformatted.
 
-field_avg_cit = num_X.groupby('field_variety').citations.mean()
-for field, field_avg in zip(field_avg_cit.index, field_avg_cit):
-    num_X.loc[num_X['field_variety'] == field, 'field_cit'] = field_avg
-
 
 """
 END do not reorder
@@ -135,7 +131,6 @@ print("Features created")
 ##########################################
 missing_values2(num_X)
 missing_values2(test)
-
       
 ### Drop columns containing just strings
 num_X = num_X.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'doi', 'fields_of_study'], axis = 1)
@@ -151,7 +146,7 @@ print("Missing values handled")
 num_X = num_X[num_X['references'] < 500]
 num_X = num_X[num_X['team_sz'] < 40]
 num_X = num_X[num_X['topic_variety'] < 60]
-# num_X = num_X[num_X['venPresL'] < 300]
+num_X = num_X[num_X['venPresL'] < 300]
 num_X = num_X[num_X['h_index'] < 30]
 
 #%store num_X
