@@ -47,7 +47,7 @@ from CODE.features.author_h_index import author_h_index
 from CODE.features.paper_h_index import paper_h_index
 from CODE.features.team_size import team_size
 from CODE.features.author_database import author_database
-
+print("Imports complete")
 
 ##########################################
 #              Load datasets             #
@@ -65,7 +65,7 @@ with open('my_dataset1.pickle', 'rb') as dataset:
     author_citation_dic = pickle.load(dataset)
 with open('my_dataset2.pickle', 'rb') as dataset2:
     author_db = pickle.load(dataset2)
-
+print("Data loaded")
 
 ##########################################
 #        Missing values handling         #
@@ -186,7 +186,7 @@ for field, field_avg in zip(field_avg_cit.index, field_avg_cit):
 """
 END do not reorder
 """
-
+print("Features created")
 ##########################################
 #    Deal with specific missing values   #
 ##########################################
@@ -239,7 +239,7 @@ num_X = num_X[num_X['h_index'] < 30]
 ##########################################
 ## train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
-
+print("Data split")
 
 ##########################################
 #     Outlier detection 2: Quantile      #
@@ -260,7 +260,7 @@ X_train = X_train.drop(labels = out_rows)
 y_train = y_train.drop(labels = out_rows)
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
-
+print("Outliers deleted")
 
 ##########################################
 #         Model implementations          #
@@ -368,7 +368,7 @@ r2: 0.02787632669251372  depth = 50
 """
 
 #----------- K-Neighbors for Regression
-#kn_reg (X_train, y_train, X_val, y_val, neighbors = 20, algorithm = 'auto', leaf_sz = 30)
+kn_reg (X_train, y_train, X_val, y_val)
 """
 OPTIONS:
 algorithm = 'auto', 'ball_tree', 'kd_tree', 'brute'
@@ -400,7 +400,7 @@ MODEL RESULTS:
 r2: 0.005729150866153665
 score: 0.005729150866153665
 """
-
+print("Models complete")
 
 #----------- Odds and Ends
 #model.fit(X_train, y_train)
