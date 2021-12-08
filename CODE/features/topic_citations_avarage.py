@@ -1,7 +1,7 @@
 import pandas as pd
 import math
 
-def topic_citations_avarage(data):
+def topic_citations_avarage(data, test):
     """
     Computes the avarage citations for each topic
     Input:
@@ -12,7 +12,8 @@ def topic_citations_avarage(data):
     citations = [] #create empty list to keep track of citations
     topics_dict = {} #create empty dict to add citations to the topic
     
-    out = pd.Series(dtype=pd.Float64Dtype())
+    out_data = pd.Series(dtype=pd.Float64Dtype())
+    out_test = pd.Series(dtype=pd.Float64Dtype())
 
     for index, i_paper in data.iterrows(): #iterate over dataframe 
         topics = i_paper['topics'] #to get all the topics for one paper
@@ -43,6 +44,23 @@ def topic_citations_avarage(data):
         avarage = sum(all_the_citations) / len(all_the_citations) #calculate the avarage of all the citations of each topic
         if avarage is math.nan:
             print('nan')
-        out[index,] = avarage 
+        out_data[index,] = avarage 
+        
+    for index, i_paper in test.iterrows(): # iterate over the dataframe 
+        topics = i_paper['topics'] # check all the topics for one paper
+        all_the_citations = [] # create empty list to keep track of all the citations for all the topics
+        if len(topics) != 0:
+            for topic in topics:
+                if topic in topics_dict.keys():
+                    all_the_citations += topics_dict[topic] #add citations list of each topic to bigger list
+                else:
+                    all_the_citations += [missing_topics]
+        else:
+            all_the_citations = [missing_topics]
 
-    return out
+        avarage = sum(all_the_citations) / len(all_the_citations) #calculate the avarage of all the citations of each topic
+        if avarage is math.nan:
+            print('nan')
+        out_test[index,] = avarage 
+
+    return out_data, out_test
