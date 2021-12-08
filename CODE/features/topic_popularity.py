@@ -1,4 +1,3 @@
-from numpy.lib.function_base import average
 import pandas as pd
 
 def topic_popularity(data, test):
@@ -15,9 +14,7 @@ def topic_popularity(data, test):
     topic_freq_test = pd.Series(dtype=pd.Int64Dtype())
 
     for index, i_paper in data.iterrows():
-
         topics = i_paper['topics']
-        
         for topic in topics:
             if topic in topic_popularity_dict.keys():
                 topic_popularity_dict[topic] += 1
@@ -41,7 +38,8 @@ def topic_popularity(data, test):
         topics = i_paper['topics']
         topics_list = []
         for topic in topics:
-            topics_list.append(topic_popularity_dict[topic])
+            if topic in topic_popularity_dict.keys():
+                topics_list.append(topic_popularity_dict[topic])
         if len(topics_list) != 0:
             most_popular = max(topics_list)
         else:
