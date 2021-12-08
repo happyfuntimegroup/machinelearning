@@ -47,7 +47,7 @@ from CODE.features.author_h_index import author_h_index
 from CODE.features.paper_h_index import paper_h_index
 from CODE.features.team_size import team_size
 from CODE.features.author_database import author_database
-
+print("Imports complete")
 
 ##########################################
 #              Load datasets             #
@@ -65,7 +65,7 @@ with open('my_dataset1.pickle', 'rb') as dataset:
     author_citation_dic = pickle.load(dataset)
 with open('my_dataset2.pickle', 'rb') as dataset2:
     author_db = pickle.load(dataset2)
-
+print("Data loaded")
 
 ##########################################
 #        Missing values handling         #
@@ -102,6 +102,35 @@ data.loc[data['topics'].isnull(), 'topics'] = ""
         #   Take most frequent occurrence for venue
         #       If venue not known, do something else?
     
+
+
+
+# Missing values for feature 'fields_of_study'
+test.loc[test['fields_of_study'].isnull(), 'fields_of_study'] = ""
+
+# Missing values for feature 'title'
+test.loc[test['title'].isnull(), 'title'] = ""
+
+# Missing values for feature 'abstract'
+test.loc[test['abstract'].isnull(), 'abstract'] = ""
+    
+# Missing values for features 'authors'
+test.loc[test['authors'].isnull(), 'authors'] = ""
+
+# Missing values for feature 'venue'
+test.loc[test['venue'].isnull(), 'venue'] = ""
+    
+# Missing values for feature 'year'
+# data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = mean(year) 
+        #   Take mean by venue instead
+        #       If venue not known, take something else?
+
+# Missing values for feature 'references'
+test.loc[test['references'].isnull(), 'references'] = ""
+
+# Missing values for feature 'topics'
+test.loc[test['topics'].isnull(), 'topics'] = ""
+
 ##########################################
 #       Create basic numeric df          #
 ##########################################
@@ -120,26 +149,34 @@ This is the dataframe we will use to train the models.
 
 DO NOT change the order in this section if at all possible
 """
-num_X['title_length'] = length_title(data)      # returns a numbered series
-num_X['field_variety'] = field_variety(data)    # returns a numbered series 
-num_X['field_popularity'] = field_popularity(data) # returns a numbered series
-num_X['field_citations_avarage'] = field_citations_avarage(data) # returns a numbered series
+num_X['title_length'] = length_title(data)      # returns a numbered series with wordlength of the title
+test['title_length'] = length_title(test)
+num_X['field_variety'] = field_variety(data)    # returns a numbered series with amount of fields
+test['field_variety'] = field_variety(test)    # returns a numbered series with amount of fields
+num_X['field_popularity'], test['field_popularity'] = field_popularity(data, test) # returns a numbered series with 
+# num_X['field_citations_avarage'], _  = field_citations_avarage(data, test) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
+test['team_sz'] = team_size(test)           # returns a numbered series
 num_X['topic_var'] = topics_variety(data)    # returns a numbered series
-num_X['topic_popularity'] = topic_popularity(data) # returns a numbered series
-num_X['topic_citations_avarage'] = topic_citations_avarage(data) # returns a numbered series
-num_X['venue_popularity'], num_X['venue'] = venue_popularity(data)  # returns a numbered series and a pandas.Series of the 'venues' column reformatted 
+test['topic_variety'] = topics_variety(test)    # returns a numbered series
+num_X['topic_popularity'], test['topic_popularity']= topic_popularity(data, test) # returns a numbered series
+# num_X['topic_citations_avarage'] = topic_citations_avarage(data) # returns a numbered series
+num_X['venue_popularity'], num_X['venue'], test['venue_popularity'], test['venue'] = venue_popularity(data, test)  # returns a numbered series and a pandas.Series of the 'venues' column reformatted 
 num_X['open_access'] = pd.get_dummies(data["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
+test['open_access'] = pd.get_dummies(test["is_open_access"], drop_first = True)  # returns pd.df (True = 1)
 num_X['age'] = age(data)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
-num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
+test['age'] = age(test)               # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
+# num_X['venPresL'] = venues_citations(data)   # returns a numbered series. Needs to be called upon AFTER the venues have been reformed (from venue_frequency)
 keywords = best_keywords(data, 1, 0.954, 0.955)    # from [data set] get [integer] keywords from papers btw [lower bound] and [upper bound] quantiles; returns list
 num_X['has_keyword'] = abst_words(data, keywords)#returns a numbered series: 1 if any of the words is present in the abstract, else 0
+test['has_keyword'] = abst_words(test, keywords)#returns a numbered series: 1 if any of the words is present in the abstract, else 0
 num_X['keyword_count'] = abst_count(data, keywords) # same as above, only a count (noot bool)
+test['keyword_count'] = abst_count(test, keywords) # same as above, only a count (noot bool)
 
 # Author H-index
-author_db, reformatted_authors = author_database(data)
-data['authors'] = reformatted_authors
-num_X['h_index'] = paper_h_index(data, author_citation_dic) # Returns a numbered series. Must come after author names have been reformatted.
+author_db, data['authors'] = author_database(data)
+_, test['authors'] = author_database(test) # reformatting authors name from test database
+num_X['h_index'], test['h_index'] = paper_h_index(data, author_citation_dic, test) # Returns a numbered series. Must come after author names have been reformatted.
 
 field_avg_cit = num_X.groupby('field_variety').citations.mean()
 for field, field_avg in zip(field_avg_cit.index, field_avg_cit):
@@ -149,7 +186,7 @@ for field, field_avg in zip(field_avg_cit.index, field_avg_cit):
 """
 END do not reorder
 """
-
+print("Features created")
 ##########################################
 #    Deal with specific missing values   #
 ##########################################
@@ -202,7 +239,7 @@ num_X = num_X[num_X['h_index'] < 30]
 ##########################################
 ## train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
-
+print("Data split")
 
 ##########################################
 #     Outlier detection 2: Quantile      #
@@ -223,7 +260,7 @@ X_train = X_train.drop(labels = out_rows)
 y_train = y_train.drop(labels = out_rows)
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
-
+print("Outliers deleted")
 
 ##########################################
 #         Model implementations          #
@@ -331,7 +368,7 @@ r2: 0.02787632669251372  depth = 50
 """
 
 #----------- K-Neighbors for Regression
-#kn_reg (X_train, y_train, X_val, y_val, neighbors = 20, algorithm = 'auto', leaf_sz = 30)
+kn_reg (X_train, y_train, X_val, y_val)
 """
 OPTIONS:
 algorithm = 'auto', 'ball_tree', 'kd_tree', 'brute'
@@ -343,39 +380,12 @@ r2: 0.0036641038448516072  neighbors = 3
 r2: 0.012151620462786172   neighbors = 10
 r2: 0.012527572947568677   neighbors = 20
 """
-from sklearn.linear_model import LinearRegression
-
-
-lr = LinearRegression()
-model = lr.fit(X_train, y_train)
-y_pred = lr.predict(X_val)
-
-# print(y_pred)
-# print(y_train)
-r_sq = model.score(X_val, y_val)
-print('r2 linear regression:', r_sq)
 
 from sklearn.svm import SVR
 svr = SVR()
-model1 = svr.fit(X_train, np.ravel(y_train))
-r_sq1 = model1.score(X_val, y_val)
+model = svr.fit(X_train, np.ravel(y_train))
+r_sq1 = model.score(X_val, y_val)
 print('r2 scr:', r_sq1)
-
-##########################################
-#  Writing file with predicted values    #
-##########################################
-"""
-    Creates new DataFrame with DOI of the papers, 
-    and predicted citation values.
-"""
-
-# df_output = pd.DataFrame()
-# df_output.columns = ['doi', 'citations']
-
-# y_test = model.predict(test)
-# for index, i_paper in test.iterrows():
-#     df_output.loc[index, 'doi'] = i_paper['doi'] 
-#     df_output.loc[index, 'citations'] = y_test.loc[index, 'citations']
 
 #-----------  Multi-layer Perceptron for Regression
 #mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant') 
@@ -390,7 +400,7 @@ MODEL RESULTS:
 r2: 0.005729150866153665
 score: 0.005729150866153665
 """
-
+print("Models complete")
 
 #----------- Odds and Ends
 #model.fit(X_train, y_train)
@@ -410,14 +420,13 @@ score: 0.005729150866153665
     and predicted citation values.
 """
 
-# df_output = pd.DataFrame()
-# df_output.columns = ['doi', 'citations']
+df_output = pd.DataFrame(columns = ['doi','citations'])
 
-# y_test = model.predict(test)
-# for index, i_paper in test.iterrows():
-#     df_output.loc[index, 'doi'] = i_paper['doi'] 
-#     df_output.loc[index, 'citations'] = y_test.loc[index, 'citations']
+y_test = model.predict(test)
+for index, i_paper in test.iterrows():
+    df_output.loc[index, 'doi'] = i_paper['doi'] 
+    df_output.loc[index, 'citations'] = y_test.loc[index, 'citations']
 
-# import json
-#with open("output.json", "w") as outfile:
-    #json.dump(df_output, outfile)
+import json
+with open("OUTPUT/first_attempt.json", "w") as outfile:
+    json.dump(df_output, outfile)

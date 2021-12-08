@@ -26,12 +26,7 @@ LabelEncoder()
 
             
 
-        # print(dict(sorted(venues_count.items(), key=lambda item: item[1])))
-        # print(sum(venues_count.values()))
-        # print(len(venues_count.keys()))
-        # # print(venues_count)
-
-        #X_train, X_val, y_train, y_val
+     
 
         inputs = papers.drop('citations', axis='columns')
         target = papers['citations']

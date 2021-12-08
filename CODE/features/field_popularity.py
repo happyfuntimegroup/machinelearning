@@ -1,6 +1,7 @@
 import pandas as pd
 import math
-def field_popularity(data):
+
+def field_popularity(data, test):
     """
     Computes the number of different fields that each paper is about by taking the number of fields in 'fields_of_study'
     Input:
@@ -11,7 +12,8 @@ def field_popularity(data):
     """
     
     field_popularity_dict = {}
-    field_freq = pd.Series(dtype=pd.Int64Dtype())
+    field_freq_data = pd.Series(dtype=pd.Int64Dtype())
+    field_freq_test = pd.Series(dtype=pd.Int64Dtype())
 
 
     for index, i_paper in data.iterrows():
@@ -34,9 +36,21 @@ def field_popularity(data):
             most_popular = max(field_list)
         else:
             most_popular = int(missing_fields)
-        field_freq[index,] = most_popular
+        field_freq_data[index,] = most_popular
 
-    return field_freq
+    for index, i_paper in test.iterrows():
+        fields = i_paper['fields_of_study']
+        field_list = []
+        for field in fields:
+            if field in field_popularity_dict.keys():
+                field_list.append(field_popularity_dict[field])
+        if len(field_list) != 0:
+            most_popular = max(field_list)
+        else:
+            most_popular = int(missing_fields)
+        field_freq_test[index,] = most_popular
+
+    return field_freq_data, field_freq_test
         
 
 
