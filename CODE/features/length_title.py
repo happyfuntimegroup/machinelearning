@@ -5,7 +5,7 @@ def length_title(data):
     This function is based on an online published article:
         https://www.natureindex.com/news-blog/five-features-highly-cited-scientific-article
     Input:
-        - df['title']:    dataframe (dataset); 'title' column                                   [pandas dataframe]
+        - df['title']:    dataframe (dataset); or just the 'title' column                       [pandas dataframe]
     Output:
         - title_length:   vector of wordlength of for each paper title of the given dataset     [pandas series]
                             with title_length                                                   [int]
