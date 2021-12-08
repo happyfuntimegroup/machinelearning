@@ -36,8 +36,12 @@ def kn_reg (X_train, y_train, X_val, y_val, neighbors, algorithm, leaf_sz):
 
 
 def my_svr (X_train, y_train, X_val, y_val):
-    # SVR()
-    pass
+    from sklearn.svm import SVR
+    import numpy as np
+    svr = SVR()
+    model1 = svr.fit(X_train, np.ravel(y_train))
+    r_sq1 = model1.score(X_val, y_val)
+    print('r2 scr:', r_sq1)
 
 def mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant'):
     import numpy as np

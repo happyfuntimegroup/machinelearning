@@ -353,13 +353,13 @@ y_pred = lr.predict(X_val)
 # print(y_pred)
 # print(y_train)
 r_sq = model.score(X_val, y_val)
-print('coefficient of determination:', r_sq)
+print('r2 linear regression:', r_sq)
 
-from sklearn.svm import SVC
-svc = SVC()
-model1 = svc.fit(X_train, np.ravel(y_train))
+from sklearn.svm import SVR
+svr = SVR()
+model1 = svr.fit(X_train, np.ravel(y_train))
 r_sq1 = model1.score(X_val, y_val)
-print('coefficient of determination:', r_sq1)
+print('r2 scr:', r_sq1)
 
 ##########################################
 #  Writing file with predicted values    #
@@ -378,7 +378,7 @@ print('coefficient of determination:', r_sq1)
 #     df_output.loc[index, 'citations'] = y_test.loc[index, 'citations']
 
 #-----------  Multi-layer Perceptron for Regression
-mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant') 
+#mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant') 
 """
 OPTIONS:
 activation= 'identity', 'logistic', 'tanh', 'relu'
