@@ -34,9 +34,9 @@ def kn_reg (X_train, y_train, X_val, y_val):
         ('model', KNeighborsRegressor()) ])
 
     model = GridSearchCV(estimator = pipe,
-                        param_grid = {'model__n_neighbors': [1, 2, 5, 10, 15, 20, 25],
+                        param_grid = {'model__n_neighbors': [10, 15, 20],
                                     'model__algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
-                                    'model__leaf_size': [1, 5, 10, 20, 30, 40]},
+                                    'model__leaf_size': [20, 30, 40]},
                         cv = 5)
     
     y_ravel = np.ravel(y_train)
