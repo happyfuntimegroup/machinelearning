@@ -345,5 +345,8 @@ for index, i_paper in test.iterrows():
     df_output.loc[index, 'citations'] = y_test.loc[index, 'citations']
 
 import json
-with open("OUTPUT/first_attempt.json", "w") as outfile:
-    json.dump(df_output, outfile)
+list_dic_output = df_output.to_dict(orient = 'records')
+jsonOutput = json.dumps(list_dic_output, indent = 4)
+with open('predicted.json', 'w') as f:
+    json.dump(jsonOutput, f)
+print(jsonOutput)
