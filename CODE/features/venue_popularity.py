@@ -9,11 +9,9 @@ def venue_popularity(data, test):
     for index, i_paper in data.iterrows():
         venue_temp = i_paper['venue']
         venue = ''
-
         for char in venue_temp:
             if char.isupper():
                 venue += char
-            
         if venue in venues_popularity_dict.keys():
             venues_popularity_dict[venue] += 1
         else:
@@ -25,10 +23,13 @@ def venue_popularity(data, test):
     for index, i_paper in test.iterrows():
         venue_temp = i_paper['venue']
         venue = ''
-
         for char in venue_temp:
             if char.isupper():
                 venue += char
+        if venue in venues_popularity_dict.keys():
+            venues_popularity_dict[venue] += 1
+        else:
+            venues_popularity_dict[venue] = 1
     
         venue_reformatted_test[index,] = venue
     
@@ -36,7 +37,7 @@ def venue_popularity(data, test):
     venue_freq_data = pd.Series(dtype=pd.Int64Dtype())
     venue_freq_test = pd.Series(dtype=pd.Int64Dtype())
     for index, i_paper in data.iterrows():
-        venue_freq_data[index,] = venues_popularity_dict[venue_reformatted_test[index]] 
+        venue_freq_data[index,] = venues_popularity_dict[venue_reformatted_data[index]] 
     
     for index, i_paper in test.iterrows():
         venue_freq_test[index,] = venues_popularity_dict[venue_reformatted_test[index]] 
