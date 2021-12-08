@@ -47,7 +47,7 @@ from CODE.features.author_h_index import author_h_index
 from CODE.features.paper_h_index import paper_h_index
 from CODE.features.team_size import team_size
 from CODE.features.author_database import author_database
-
+print("Imports complete")
 
 ##########################################
 #              Load datasets             #
@@ -65,7 +65,7 @@ with open('my_dataset1.pickle', 'rb') as dataset:
     author_citation_dic = pickle.load(dataset)
 with open('my_dataset2.pickle', 'rb') as dataset2:
     author_db = pickle.load(dataset2)
-
+print("Data loaded")
 
 ##########################################
 #        Missing values handling         #
@@ -149,7 +149,7 @@ for field, field_avg in zip(field_avg_cit.index, field_avg_cit):
 """
 END do not reorder
 """
-
+print("Features created")
 ##########################################
 #    Deal with specific missing values   #
 ##########################################
@@ -202,7 +202,7 @@ num_X = num_X[num_X['h_index'] < 30]
 ##########################################
 ## train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
-
+print("Data split")
 
 ##########################################
 #     Outlier detection 2: Quantile      #
@@ -223,7 +223,7 @@ X_train = X_train.drop(labels = out_rows)
 y_train = y_train.drop(labels = out_rows)
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
-
+print("Outliers deleted")
 
 ##########################################
 #         Model implementations          #
@@ -331,7 +331,7 @@ r2: 0.02787632669251372  depth = 50
 """
 
 #----------- K-Neighbors for Regression
-#kn_reg (X_train, y_train, X_val, y_val, neighbors = 20, algorithm = 'auto', leaf_sz = 30)
+kn_reg (X_train, y_train, X_val, y_val)
 """
 OPTIONS:
 algorithm = 'auto', 'ball_tree', 'kd_tree', 'brute'
@@ -343,23 +343,27 @@ r2: 0.0036641038448516072  neighbors = 3
 r2: 0.012151620462786172   neighbors = 10
 r2: 0.012527572947568677   neighbors = 20
 """
-from sklearn.linear_model import LinearRegression
 
 
-lr = LinearRegression()
-model = lr.fit(X_train, y_train)
-y_pred = lr.predict(X_val)
+#----------- Alternate Linear Regression
+# from sklearn.linear_model import LinearRegression
 
-# print(y_pred)
-# print(y_train)
-r_sq = model.score(X_val, y_val)
-print('r2 linear regression:', r_sq)
 
-from sklearn.svm import SVR
-svr = SVR()
-model1 = svr.fit(X_train, np.ravel(y_train))
-r_sq1 = model1.score(X_val, y_val)
-print('r2 scr:', r_sq1)
+# lr = LinearRegression()
+# model = lr.fit(X_train, y_train)
+# y_pred = lr.predict(X_val)
+
+# # print(y_pred)
+# # print(y_train)
+# r_sq = model.score(X_val, y_val)
+# print('r2 linear regression:', r_sq)
+
+#----------- Alternate SVR
+# from sklearn.svm import SVR
+# svr = SVR()
+# model1 = svr.fit(X_train, np.ravel(y_train))
+# r_sq1 = model1.score(X_val, y_val)
+# print('r2 scr:', r_sq1)
 
 ##########################################
 #  Writing file with predicted values    #
@@ -377,6 +381,7 @@ print('r2 scr:', r_sq1)
 #     df_output.loc[index, 'doi'] = i_paper['doi'] 
 #     df_output.loc[index, 'citations'] = y_test.loc[index, 'citations']
 
+
 #-----------  Multi-layer Perceptron for Regression
 #mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant') 
 """
@@ -390,7 +395,7 @@ MODEL RESULTS:
 r2: 0.005729150866153665
 score: 0.005729150866153665
 """
-
+print("Models complete")
 
 #----------- Odds and Ends
 #model.fit(X_train, y_train)
@@ -421,3 +426,4 @@ score: 0.005729150866153665
 # import json
 #with open("output.json", "w") as outfile:
     #json.dump(df_output, outfile)
+print("end")
