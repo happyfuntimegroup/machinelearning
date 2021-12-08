@@ -217,7 +217,8 @@ for i, i_paper in missing_year.iterrows():
         num_X.loc[index,'year'] = num_X.year.mean()
       
 ### Drop columns containing just strings
-num_X = num_X.drop(['venue', 'doi', 'field_variety'], axis = 1)
+num_X = num_X.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'doi', 'fields_of_study'], axis = 1)
+test = test.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'fields_of_study'], axis = 1)
 
 
 ##########################################
@@ -422,7 +423,7 @@ print("Models complete")
 
 df_output = pd.DataFrame(columns = ['doi','citations'])
 
-y_test = model.predict(test)
+y_test = model.predict(test.drop(['doi'], axis=1))
 for index, i_paper in test.iterrows():
     df_output.loc[index, 'doi'] = i_paper['doi'] 
     df_output.loc[index, 'citations'] = y_test.loc[index, 'citations']
