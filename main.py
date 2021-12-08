@@ -16,6 +16,8 @@ import yake  #NOTE: with Anaconda: conda install -c conda-forge yake
 ##########################################
 from CODE.data_preprocessing.split_val import split_val
 from CODE.data_preprocessing.find_outliers_tukey import find_outliers_tukey
+from CODE.data_preprocessing.missing_values import missing_values1
+from CODE.data_preprocessing.missing_values import missing_values2
 
 #feature based on the title of the paper
 from CODE.features.length_title import length_title
@@ -70,66 +72,8 @@ print("Data loaded")
 ##########################################
 #        Missing values handling         #
 ##########################################
-
-# Missing values for feature 'fields_of_study'
-data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = ""
-
-# Missing values for feature 'title'
-data.loc[data['title'].isnull(), 'title'] = ""
-
-# Missing values for feature 'abstract'
-data.loc[data['abstract'].isnull(), 'abstract'] = ""
-    
-# Missing values for features 'authors'
-data.loc[data['authors'].isnull(), 'authors'] = ""
-
-# Missing values for feature 'venue'
-data.loc[data['venue'].isnull(), 'venue'] = ""
-    
-# Missing values for feature 'year'
-# data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = mean(year) 
-        #   Take mean by venue instead
-        #       If venue not known, take something else?
-
-# Missing values for feature 'references'
-data.loc[data['references'].isnull(), 'references'] = ""
-
-# Missing values for feature 'topics'
-data.loc[data['topics'].isnull(), 'topics'] = ""
-
-# Missing values for feature 'is_open_access'
-#data.loc[data['is_open_access'].isnull(), 'is_open_access'] = "" 
-        #   Take most frequent occurrence for venue
-        #       If venue not known, do something else?
-    
-
-
-
-# Missing values for feature 'fields_of_study'
-test.loc[test['fields_of_study'].isnull(), 'fields_of_study'] = ""
-
-# Missing values for feature 'title'
-test.loc[test['title'].isnull(), 'title'] = ""
-
-# Missing values for feature 'abstract'
-test.loc[test['abstract'].isnull(), 'abstract'] = ""
-    
-# Missing values for features 'authors'
-test.loc[test['authors'].isnull(), 'authors'] = ""
-
-# Missing values for feature 'venue'
-test.loc[test['venue'].isnull(), 'venue'] = ""
-    
-# Missing values for feature 'year'
-# data.loc[data['fields_of_study'].isnull(), 'fields_of_study'] = mean(year) 
-        #   Take mean by venue instead
-        #       If venue not known, take something else?
-
-# Missing values for feature 'references'
-test.loc[test['references'].isnull(), 'references'] = ""
-
-# Missing values for feature 'topics'
-test.loc[test['topics'].isnull(), 'topics'] = ""
+missing_values1(data)
+missing_values1(test)
 
 ##########################################
 #       Create basic numeric df          #
@@ -189,31 +133,9 @@ print("Features created")
 ##########################################
 #    Deal with specific missing values   #
 ##########################################
-# Open_access, thanks to jreback (27th of July 2016) https://github.com/pandas-dev/pandas/issues/13809
-OpAc_by_venue = num_X.groupby('venue').open_access.apply(lambda x: x.mode()) # Take mode for each venue
-OpAc_by_venue = OpAc_by_venue.to_dict()
-missing_OpAc = num_X.loc[num_X['open_access'].isnull(),]
-for i, i_paper in missing_OpAc.iterrows():
-    venue = i_paper['venue']
-    doi = i_paper['doi']
-    index = num_X[num_X['doi'] == doi].index[0]
-    if venue in OpAc_by_venue.keys():   # If a known venue, append the most frequent value for that venue
-        num_X.loc[index,'open_access'] = OpAc_by_venue[venue] # Set most frequent occurrence 
-    else:                               # Else take most occurring value in entire dataset
-        num_X.loc[index,'open_access'] = num_X.open_access.mode()[0] # Thanks to BENY (2nd of February, 2018) https://stackoverflow.com/questions/48590268/pandas-get-the-most-frequent-values-of-a-column
+missing_values2(num_X)
+missing_values2(test)
 
-# Year
-year_by_venue = num_X.groupby('venue').year.apply(lambda x: x.mean()) # Take mean for each venue
-year_by_venue = year_by_venue.to_dict()
-missing_year = num_X.loc[num_X['year'].isnull(),]
-for i, i_paper in missing_year.iterrows():
-    venue = i_paper['venue']
-    doi = i_paper['doi']
-    index = num_X[num_X['doi'] == doi].index[0]
-    if venue in year_by_venue.keys():   # If a known venue, append the mean value for that venue
-        num_X.loc[index, 'year'] = year_by_venue[venue] # Set mean publication year
-    else:                               # Else take mean value of entire dataset
-        num_X.loc[index,'year'] = num_X.year.mean()
       
 ### Drop columns containing just strings
 num_X = num_X.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'doi', 'fields_of_study'], axis = 1)
