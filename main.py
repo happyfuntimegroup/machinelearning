@@ -227,6 +227,22 @@ model1 = svc.fit(X_train, np.ravel(y_train))
 r_sq1 = model1.score(X_val, y_val)
 print('coefficient of determination:', r_sq1)
 
+##########################################
+#  Writing file with predicted values    #
+##########################################
+"""
+    Creates new DataFrame with DOI of the papers, 
+    and predicted citation values.
+"""
+
+# df_output = pd.DataFrame()
+# df_output.columns = ['doi', 'citations']
+
+# y_test = model.predict(test)
+# for index, i_paper in test.iterrows():
+#     df_output.loc[index, 'doi'] = i_paper['doi'] 
+#     df_output.loc[index, 'citations'] = y_test.loc[index, 'citations']
+
 # import json
 #with open("output.json", "w") as outfile:
-    #json.dump(num_X, outfile)
+    #json.dump(df_output, outfile)
