@@ -1,3 +1,8 @@
+"""
+This was a very early attempt at a decision tree. We never got it properly working.
+It convinced us that we should be looking for numerical features and related models.
+
+
 from sklearn import tree
 import pandas as pd
 from sklearn import tree
@@ -91,3 +96,5 @@ LabelEncoder()
         # df = pd.DataFrame.from_dict(venues)
         # print(df)
         # print(venues)
+        
+"""
