@@ -77,7 +77,6 @@ def mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solve
                         },
                         cv = 5
     )
-#    model = MLPRegressor(max_iter = maxit, activation = activation, solver=solver, alpha = alpha, learning_rate = lr, random_state = 123)
     reg = model.fit(X_train, y_ravel)
     y_pred_val = reg.predict(X_val)
 

@@ -5,8 +5,8 @@ def simple_linear(X_train, y_train, X_val, y_val):
     model = LinearRegression()
     reg = model.fit(X = X_train, y = y_train)
     y_pred_val = reg.predict(X_val)
-    print("r2:", r2_score(y_val, y_pred_val))
-    print("MAE:", mean_absolute_error(y_val, y_pred_val))
+    print("LinearRegression r2:", r2_score(y_val, y_pred_val))
+    print("LinearRegression MAE:", mean_absolute_error(y_val, y_pred_val))
     print()
     
     #return r2, mae
@@ -28,8 +28,8 @@ def log_reg(X_train, y_train, X_val, y_val):
     reg = model.fit(X = X_train_s, y = y_ravel)
     y_pred_val = reg.predict(X_val_s)
 
-    print('r2:', r2_score(y_val, y_pred_val))   # 0.006551953988217396
-    print("MAE:", mean_absolute_error(y_val, y_pred_val))    # 34.07342328208346
+    print('log_reg r2:', r2_score(y_val, y_pred_val))   # 0.006551953988217396
+    print("log_reg MAE:", mean_absolute_error(y_val, y_pred_val))    # 34.07342328208346
     print()
     
 def sdg_reg (X_train, y_train, X_val, y_val):
@@ -54,7 +54,7 @@ def sdg_reg (X_train, y_train, X_val, y_val):
                 mae = mean_absolute_error(y_val, y_pred)
                 r2 =  r2_score(y_val, y_pred)
                 settings.append((learning_rate, eta0, loss, mae, r2))
-                print(settings[-1])
+                print("sdg_reg r2:", settings[-1])
 
 def poly_reg (X_train, y_train, X_val, y_val, degree):
     import numpy as np
@@ -77,8 +77,8 @@ def poly_reg (X_train, y_train, X_val, y_val, degree):
     reg = model.fit(x_train_poly, y_train)
     y_poly_pred = reg.predict(x_val_poly)
 
-    print("r2:", r2_score(y_val, y_poly_pred))   # -0.04350391168707901
-    print("MAE", mean_absolute_error(y_val, y_poly_pred))    # 32.65668266590838
+    print("poly_reg r2:", r2_score(y_val, y_poly_pred))   # -0.04350391168707901
+    print("poly_reg MAE", mean_absolute_error(y_val, y_poly_pred))    # 32.65668266590838
 
     #source: https://towardsdatascience.com/polynomial-regression-bbe8b9d97491
 
@@ -98,5 +98,5 @@ def pois_reg (X_train, y_train, X_val, y_val):
     reg = model.fit(X = X_train_s, y = y_ravel)
     y_pred_val = reg.predict(X_val_s)
 
-    print('r2:', r2_score(y_val, y_pred_val))
-    print("MAE:", mean_absolute_error(y_val, y_pred_val))
+    print('pois_reg r2:', r2_score(y_val, y_pred_val))
+    print("pois_reg MAE:", mean_absolute_error(y_val, y_pred_val))
