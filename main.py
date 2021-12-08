@@ -141,7 +141,7 @@ missing_values2(test)
 num_X = num_X.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'doi', 'fields_of_study'], axis = 1)
 test = test.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'fields_of_study'], axis = 1)
 
-
+print("Missing values handled")
 ##########################################
 #    Outlier detection 1: threshold      #
 ##########################################
