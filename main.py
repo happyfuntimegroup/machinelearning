@@ -298,11 +298,13 @@ r2: 0.012151620462786172   neighbors = 10
 r2: 0.012527572947568677   neighbors = 20
 """
 
-from sklearn.svm import SVR
-svr = SVR()
-model = svr.fit(X_train, np.ravel(y_train))
-r_sq1 = model.score(X_val, y_val)
-print('r2 scr:', r_sq1)
+#----------- SVR
+# from sklearn.svm import SVR
+# svr = SVR()
+# model = svr.fit(X_train, np.ravel(y_train))
+# r_sq1 = model.score(X_val, y_val)
+# print('r2 scr:', r_sq1)
+
 
 #-----------  Multi-layer Perceptron for Regression
 #mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant') 
@@ -318,15 +320,6 @@ r2: 0.005729150866153665
 score: 0.005729150866153665
 """
 print("Models complete")
-
-#----------- Odds and Ends
-#model.fit(X_train, y_train)
-#print('Best score: ', model.best_score_)
-#print('Best parameters: ', model.best_params_)
-#y_pred = model.predict(X_val)
-
-#from sklearn.metrics import r2_score
-#print(r2_score(y_val,y_pred))
 
 
 ##########################################
