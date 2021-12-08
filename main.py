@@ -135,8 +135,7 @@ test.loc[test['topics'].isnull(), 'topics'] = ""
 #       Create basic numeric df          #
 ##########################################
 end = len(data)
-num_X = data.loc[ 0:end+1 , ('doi', 'citations', 'year', 'references') ]  ##REMOVE DOI
-
+num_X = data
 
 ##########################################
 #            Feature creation            #
@@ -154,10 +153,10 @@ test['title_length'] = length_title(test)
 num_X['field_variety'] = field_variety(data)    # returns a numbered series with amount of fields
 test['field_variety'] = field_variety(test)    # returns a numbered series with amount of fields
 num_X['field_popularity'], test['field_popularity'] = field_popularity(data, test) # returns a numbered series with 
-# num_X['field_citations_avarage'], _  = field_citations_avarage(data, test) # returns a numbered series
+num_X['field_citations_avarage'], _  = field_citations_avarage(data, test) # returns a numbered series
 num_X['team_sz'] = team_size(data)           # returns a numbered series
 test['team_sz'] = team_size(test)           # returns a numbered series
-num_X['topic_var'] = topics_variety(data)    # returns a numbered series
+num_X['topic_variety'] = topics_variety(data)    # returns a numbered series
 test['topic_variety'] = topics_variety(test)    # returns a numbered series
 num_X['topic_popularity'], test['topic_popularity']= topic_popularity(data, test) # returns a numbered series
 # num_X['topic_citations_avarage'] = topic_citations_avarage(data) # returns a numbered series
@@ -229,7 +228,7 @@ test = test.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'fields_of_
 
 num_X = num_X[num_X['references'] < 500]
 num_X = num_X[num_X['team_sz'] < 40]
-num_X = num_X[num_X['topic_var'] < 60]
+num_X = num_X[num_X['topic_variety'] < 60]
 # num_X = num_X[num_X['venPresL'] < 300]
 num_X = num_X[num_X['h_index'] < 30]
 
