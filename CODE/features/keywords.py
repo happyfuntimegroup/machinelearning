@@ -1,10 +1,10 @@
-"""
-Input: data, integer, float between 0 and 1, float between 0 and 1
-Output: a list of all unique keywords that were generated from qualifying papers
-"""
-
+import yake
 def best_keywords (data, words_per_paper, lower_bound, upper_bound):
-    import yake
+    """
+    Input: data, integer, float between 0 and 1, float between 0 and 1
+    Output: a list of all unique keywords that were generated from qualifying papers
+    """
+    # source: https://towardsdatascience.com/keyword-extraction-process-in-python-with-natural-language-processing-nlp-d769a9069d5c
     # take the most highly cited papers from data set
     lower = data['citations'].quantile(q = lower_bound)
     best = data[data['citations'] > lower]
@@ -37,5 +37,3 @@ def best_keywords (data, words_per_paper, lower_bound, upper_bound):
     # return a list of keywords
     kwords = [x for l in kwords for x in l]
     return set(kwords)
-
-# source: https://towardsdatascience.com/keyword-extraction-process-in-python-with-natural-language-processing-nlp-d769a9069d5c
