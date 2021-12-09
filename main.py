@@ -8,7 +8,6 @@
 import numpy as np
 import pandas as pd
 import json
-#import yake  #NOTE: with Anaconda: conda install -c conda-forge yake
 
 ##########################################
 #      Import self-made functions        #
@@ -179,6 +178,10 @@ test['nlog_venue_popularity'] = np.log(test['venue_popularity'].astype(np.float6
 test['nlog_team_sz'] = np.log(test['team_sz'].astype(np.float64)) 
 test['nlog_references'] = np.log(test['references'].astype(np.float64)) 
 
+# drop the unlogged version of the cols so they don't get counted twice. 
+num_X = num_X.drop(['year', 'title_length', 'field_citations_average', 'topic_popularity', 'venue_popularity', 'team_sz', 'references'], axis = 1)
+test = test.drop(['year', 'title_length', 'field_citations_average', 'topic_popularity', 'venue_popularity', 'team_sz', 'references'], axis = 1)
+
 """
 END do not reorder
 """
@@ -247,25 +250,15 @@ IMPLEMENT models here: to run a model, delete the # and run
 check_X = X_train.copy(deep = True)
 check_y = y_train.copy(deep = True)
 
+
 #-----------simple regression, all columns
 # Leave this on as a baseline
 # model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
-"""
-MODEL RESULTS:
-r2: 0.04709627575317288
-MSE: 33.38996
-# Worse after extra outlier removal (0.015478)
-"""
+
 #-----------logistic regression, all columns
 #model = log_reg(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
-"""
-MODEL RESULTS:
-R2: 0.006551953988217396
-MSE: 34.07342328208346
-# Worse after extra outlier removal (0.003)
-"""
 
 #-----------SGD regression, all columns
 # model = sdg_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
@@ -274,34 +267,17 @@ MSE: 34.07342328208346
 lr = [ 1, .1, .01, .001, .0001]
 learning_rate in ['constant', 'optimal', 'invscaling']:
 loss in ['squared_error', 'huber']:
-
-# MODEL RESULTS:
-# Best outcome, before extra outlier removal: ('constant', 0.01, 'squared_error', 35.74249957361433, 0.04476790061780822)
-# Best outcome after extra outlier removal: ('constant', 0.01, 'squared_error', 37.08290449479669, 0.019303736163186702)
 """
 
 #-----------polynomial regression, all columns
 #model = poly_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val, 3)
 
-"""
-MODEL RESULTS:
-r2: -0.05109 (degree = 2)
-r2: -0.0378 (degree = 3)
-r2: -5.5816 (degree = 4)
-MAE 35.1660
-"""
 
 #-----------poisson regression, all columns
 # pois_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
-"""
-MODEL RESULTS:
-r2: 0.022145
-MAE: 39.21127
-"""
 
 #-----------simple linear regression, dropping columns
-
 """
 USE this code to run one of the simple regression models, successively dropping one column
 To run, unhash the full function, then unhash the specific model
@@ -324,21 +300,12 @@ For a baseline, run the corresponding model above
 
 
 #----------- Random Forrest for Regression
-# +/- 5 min to run
 #model = de_tree_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val, 50)
 
-"""
-MODEL RESULTS:
-r2: 0.03378200504507167
-"""
 
 #----------- K-Neighbors for Regression
 #model = kn_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
-"""
-MODEL RESULTS:
-r2: 0.05784278300196066
-"""
 
 #----------- SVR
 # from sklearn.svm import SVR
