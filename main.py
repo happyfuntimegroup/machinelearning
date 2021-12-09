@@ -252,12 +252,11 @@ check_y = y_train.copy(deep = True)
 
 
 #-----------simple regression, all columns
-# Leave this on as a baseline
 # model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 
 #-----------logistic regression, all columns
-#model = log_reg(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+# model = log_reg(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 
 #-----------SGD regression, all columns
@@ -270,11 +269,11 @@ loss in ['squared_error', 'huber']:
 """
 
 #-----------polynomial regression, all columns
-#model = poly_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val, 3)
+# model = poly_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val, 3)
 
 
 #-----------poisson regression, all columns
-# pois_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+# model = pois_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 
 #-----------simple linear regression, dropping columns
@@ -300,11 +299,11 @@ For a baseline, run the corresponding model above
 
 
 #----------- Random Forrest for Regression
-#model = de_tree_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val, 50)
+# model = de_tree_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val, 50)
 
 
 #----------- K-Neighbors for Regression
-#model = kn_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+# model = kn_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 
 #----------- SVR
@@ -316,7 +315,7 @@ For a baseline, run the corresponding model above
 
 
 #-----------  Multi-layer Perceptron for Regression
-#model = mlp_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val) 
+model = mlp_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val) 
 
 """
 OPTIONS:
@@ -364,10 +363,10 @@ df_output = pd.DataFrame(columns = ['doi','citations'])
 y_test_log = model.predict(test.drop(['doi'], axis=1))
 y_test = np.exp(y_test_log) - 2
 
-# If a model is used where the y (target) did NOT need to be raveled, use this code
-for index, i_paper in test.iterrows():
-    df_output.loc[index, 'doi'] = i_paper['doi'] 
-    df_output.loc[index, 'citations'] = y_test[index]
+# # If a model is used where the y (target) did NOT need to be raveled, use this code
+# for index, i_paper in test.iterrows():
+#     df_output.loc[index, 'doi'] = i_paper['doi'] 
+#     df_output.loc[index, 'citations'] = y_test[index]
    
 # If a model is used where the y (target) had to be raveled (such as MLPRegressor or SVR), use this code
 for index, i_paper in test.iterrows():
