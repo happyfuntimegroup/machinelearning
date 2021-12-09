@@ -7,9 +7,8 @@
 ##########################################
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from scipy.stats import pearsonr
-import yake  #NOTE: with Anaconda: conda install -c conda-forge yake
+import json
+#import yake  #NOTE: with Anaconda: conda install -c conda-forge yake
 
 ##########################################
 #      Import self-made functions        #
@@ -131,15 +130,16 @@ num_X['h_index'], test['h_index'] = paper_h_index(data, author_citation_dic, tes
 END do not reorder
 """
 print("Features created")
+
 ##########################################
 #    Filling specific missing values     #
 ##########################################
 missing_values2(num_X)
 missing_values2(test)
-      
+
 ### Drop columns containing just strings or boolean
-num_X = num_X.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'doi', 'fields_of_study', 'is_open_access'], axis = 1)
-test = test.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'fields_of_study', 'is_open_access'], axis = 1)
+num_X = num_X.drop( ['authors', 'abstract', 'topics', 'title', 'venue', 'fields_of_study', 'is_open_access', 'doi'], axis = 1)
+test = test.drop(   ['authors', 'abstract', 'topics', 'title', 'venue', 'fields_of_study', 'is_open_access'], axis = 1)
 
 ### Drop duplicate rows - this is a lenient definition, but it returns a very small number of rows, so I like it better than a full match 
 duplicate = data[data.duplicated(['title', 'year'])]
@@ -147,17 +147,53 @@ a = list(duplicate.index)
 num_X = num_X.drop(labels = a)
 
 print("Missing values handled")
+      
 ##########################################
-#    Outlier detection 1: threshold      #
+#      log transform some columns        #
 ##########################################
-# 9658 rows in the full num_X
-# 9494 rows with all turned on
+# Any columns that we build log transformations for should have no zeros and give real values to nans
+# Also we would have to convert y back from log for the predict: there is somehing about this in one of the documents somewhere...
 
-num_X = num_X[num_X['references'] < 500]
-num_X = num_X[num_X['team_sz'] < 40]
-num_X = num_X[num_X['topic_variety'] < 60]
-num_X = num_X[num_X['venPresL'] < 300]
-num_X = num_X[num_X['h_index'] < 30]
+## Fill zeros
+# a = num_X['team_sz'].median()
+# data.loc[num_X['team_sz'].isnull(), 'team_sz'] = a  # fills 13 zero values
+#... the rest need this, too
+
+## Log some columns
+# num_X['nlog_year'] = np.log(num_X['year'])
+# num_X['nlog_title_length'] = np.log(num_X['title_length'])
+# num_X['nlog_field_citations_avarage'] = np.log(num_X['field_citations_avarage'])
+# num_X['nlog_topic_popularity'] = np.log(num_X['topic_popularity'].astype(np.float64))
+# num_X['nlog_venue_popularity'] = np.log(num_X['venue_popularity'].astype(np.float64))
+# #NOTE THIS ONE num_X['nlog_team_sz'] = np.log(num_X['team_sz'].astype(np.float64)) 
+
+##I would really like to get references to log
+
+
+# drop the unlogged version of the cols so they don't get counted twice. 
+## not sure if this helps/hurts
+
+"""
+END do not reorder
+"""
+print("Features created")
+
+
+##########################################
+#   fix rows with 0 in logged columns    #
+##########################################
+print(num_X.shape)
+num_X = num_X.replace([np.inf, -np.inf], np.nan)
+num_X = num_X.dropna(axis='index', how = 'any')  # the logging made some wonky numbers
+print(num_X.shape)
+
+##########################################
+#            lable encode y: log         #
+##########################################
+# Need to add a constant to avoid zeros - REMEMBER this when undoing the log.
+num_X['citations'] = (np.log(num_X['citations'].astype(np.float64)+2))
+#num_X['citations'] = num_X['citations'].astype(int) 
+
 
 ##########################################
 #            Train/val split             #
@@ -166,17 +202,21 @@ X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 print("Data split")
 
 ##########################################
-#     Outlier detection 2: Quantile      #
+#    Outlier detection: Quantile      #
 ##########################################
 ### MODEL code for outlier detection
+# You still want as many validation samples as possible to get a realistic idea of model performance.
+#   Therefore, removing outliers happens after splitting the dataset into a training and validation set.
+#   After splitting, we detect outliers in the training set to give the model a general idea of what to expect.
 
-# print(list(X_train.columns))
+out_ref = (find_outliers_tukey(x = X_train['references'], top = 95, bottom = 0))[0]
+out_team = (find_outliers_tukey(x = X_train['team_sz'], top = 95, bottom = 0))[0]
+out_tvar = (find_outliers_tukey(x = X_train['topic_variety'], top = 95, bottom = 0))[0]
+out_ven = (find_outliers_tukey(x = X_train['venPresL'], top = 95, bottom = 0))[0]
+out_h = (find_outliers_tukey(x = X_train['h_index'], top = 95, bottom = 0))[0]
+out_cit = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
 
-out_y = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
-out_rows = out_y
-
-# out_X = (find_outliers_tukey(x = X_train['team_sz'], top = 99, bottom = 0))[0]
-# out_rows = out_y + out_X
+out_rows = out_cit + out_ref + out_team + out_tvar + out_ven + out_h
 
 out_rows = sorted(list(set(out_rows)))
 X_train = X_train.drop(labels = out_rows)
@@ -211,7 +251,7 @@ check_y = y_train.copy(deep = True)
 
 #-----------simple regression, all columns
 # Leave this on as a baseline
-simple_linear(X_train, y_train, X_val, y_val)
+model = simple_linear(X_train, y_train, X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -345,14 +385,13 @@ df_output = pd.DataFrame(columns = ['doi','citations'])
 
 dict_output = {}
 
-y_test = model.predict(test.drop(['doi'], axis=1))
+y_test_log = model.predict(test.drop(['doi'], axis=1))
+y_test = np.exp(y_test_log) - 2
 for index, i_paper in test.iterrows():
     df_output.loc[index, 'doi'] = i_paper['doi'] 
-    df_output.loc[index, 'citations'] = y_test[index]
+    df_output.loc[index, 'citations'] = y_test[index][0]
 
 list_dic_output = df_output.to_dict(orient = 'records')
-
-import json
 
 jsonOutput = json.dumps(list_dic_output, indent = 4)
 with open('OUTPUT/predicted.json', 'w') as f:
