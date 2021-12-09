@@ -393,7 +393,7 @@ out_cit = (find_outliers_tukey(x = y_total['citations'], top = 93, bottom = 0))[
 
 out_rows = out_cit + out_ref + out_team + out_tvar + out_ven + out_h
 
-model.fit(X_total.drop(labels = out_rows), y_total.drop(labels = out_rows))
+model.fit(X_total.drop(labels = out_rows), np.ravel(y_total.drop(labels = out_rows)))
 
 ##########################################
 #  Writing file with predicted values    #
