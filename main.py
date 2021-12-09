@@ -125,7 +125,6 @@ _, test['authors'] = author_database(test) # reformatting authors name from test
 num_X['h_index'], test['h_index'] = paper_h_index(data, author_citation_dic, test) # Returns a numbered series. Must come after author names have been reformatted.
 
 
-
 """
 END do not reorder
 """
