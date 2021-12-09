@@ -73,7 +73,7 @@ def mlp_reg (X_train, y_train, X_val, y_val):
                         param_grid = {'model__activation' : ['tanh', 'relu'],
                                     'model__solver' : ['sgd', 'adam'],
                                     'model__learning_rate' : ['constant', 'adaptive'],
-                                    'model__max_iter': [1000]
+                                    'model__max_iter': [5000]
                         },
                         cv = 5
     )
