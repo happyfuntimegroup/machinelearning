@@ -223,7 +223,7 @@ out_ven = (find_outliers_tukey(x = X_train['venPresL'], top = 95, bottom = 0))[0
 out_h = (find_outliers_tukey(x = X_train['h_index'], top = 95, bottom = 0))[0]
 out_cit = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
 
-out_rows = out_cit + out_ref + out_team + out_tvar + out_ven + out_h
+out_rows = out_cit + out_tvar + out_ven + out_h #+ out_ref + out_team
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
 print("Outliers handeled")
