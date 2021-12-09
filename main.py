@@ -252,7 +252,7 @@ check_y = y_train.copy(deep = True)
 
 
 #-----------simple regression, all columns
-# model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 
 #-----------logistic regression, all columns
@@ -315,7 +315,7 @@ For a baseline, run the corresponding model above
 
 
 #-----------  Multi-layer Perceptron for Regression
-model = mlp_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val) 
+# model = mlp_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val) 
 
 """
 OPTIONS:
@@ -339,14 +339,14 @@ print("Models complete")
 X_total = pd.concat([X_train, X_val])
 y_total = pd.concat([y_train, y_val])
 
-out_ref = (find_outliers_tukey(x = X_total['references'], top = 95, bottom = 0))[0]
-out_team = (find_outliers_tukey(x = X_total['team_sz'], top = 95, bottom = 0))[0]
+#out_ref = (find_outliers_tukey(x = X_total['references'], top = 95, bottom = 0))[0]
+#out_team = (find_outliers_tukey(x = X_total['team_sz'], top = 95, bottom = 0))[0]
 out_tvar = (find_outliers_tukey(x = X_total['topic_variety'], top = 95, bottom = 0))[0]
 out_ven = (find_outliers_tukey(x = X_total['venPresL'], top = 95, bottom = 0))[0]
 out_h = (find_outliers_tukey(x = X_total['h_index'], top = 95, bottom = 0))[0]
 out_cit = (find_outliers_tukey(x = y_total['citations'], top = 93, bottom = 0))[0]
 
-out_rows = out_cit + out_ref + out_team + out_tvar + out_ven + out_h
+out_rows = out_cit + out_tvar + out_ven + out_h #+ out_ref + out_team 
 
 model.fit(X_total.drop(labels = out_rows), np.ravel(y_total.drop(labels = out_rows)))
 
@@ -364,14 +364,14 @@ y_test_log = model.predict(test.drop(['doi'], axis=1))
 y_test = np.exp(y_test_log) - 2
 
 # # Depending on the model output, a numbered series is returned, or a series with numerators in lists. For the first kind of output, use the following code....
-# for index, i_paper in test.iterrows():
-#     df_output.loc[index, 'doi'] = i_paper['doi'] 
-#     df_output.loc[index, 'citations'] = y_test[index]
+ for index, i_paper in test.iterrows():
+     df_output.loc[index, 'doi'] = i_paper['doi'] 
+     df_output.loc[index, 'citations'] = y_test[index]
    
 # .. for the latter kind of output, use this code:
-for index, i_paper in test.iterrows():
-    df_output.loc[index, 'doi'] = i_paper['doi'] 
-    df_output.loc[index, 'citations'] = y_test[index][0]
+#for index, i_paper in test.iterrows():
+#    df_output.loc[index, 'doi'] = i_paper['doi'] 
+#    df_output.loc[index, 'citations'] = y_test[index][0]
 
 list_dic_output = df_output.to_dict(orient = 'records')
 
