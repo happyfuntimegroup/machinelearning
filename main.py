@@ -257,7 +257,7 @@ check_y = y_train.copy(deep = True)
 
 #-----------simple regression, all columns
 # Leave this on as a baseline
-model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+#model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -266,7 +266,7 @@ MSE: 33.38996
 # Worse after extra outlier removal (0.015478)
 """
 #-----------logistic regression, all columns
-#log_reg(X_train, y_train, X_val, y_val)
+#model = log_reg(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -276,7 +276,7 @@ MSE: 34.07342328208346
 """
 
 #-----------SGD regression, all columns
-#sdg_reg (X_train, y_train, X_val, y_val)
+#model = sdg_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 lr = [ 1, .1, .01, .001, .0001]
@@ -289,7 +289,7 @@ loss in ['squared_error', 'huber']:
 """
 
 #-----------polynomial regression, all columns
-#poly_reg (X_train, y_train, X_val, y_val, 3)
+#model = poly_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val, 3)
 
 """
 MODEL RESULTS:
@@ -300,7 +300,7 @@ MAE 35.1660
 """
 
 #-----------poisson regression, all columns
-#pois_reg (X_train, y_train, X_val, y_val)
+#pois_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -333,7 +333,7 @@ For a baseline, run the corresponding model above
 
 #----------- Random Forrest for Regression
 # +/- 5 min to run
-#de_tree_reg (X_train, y_train, X_val, y_val, 50)
+#model = de_tree_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val, 50)
 
 """
 MODEL RESULTS:
@@ -341,7 +341,7 @@ r2: 0.03378200504507167
 """
 
 #----------- K-Neighbors for Regression
-#kn_reg (X_train, y_train, X_val, y_val)
+#model = kn_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -351,14 +351,14 @@ r2: 0.05784278300196066
 #----------- SVR
 # from sklearn.svm import SVR
 # svr = SVR()
-# model = svr.fit(X_train, np.ravel(y_train))
+# model = svr.fit(X_train.drop(labels = out_rows), np.ravel(y_train.drop(labels = out_rows) ))
 # r_sq1 = model.score(X_val, y_val)
 # print('r2 scr:', r_sq1)
 # print()
 
 
 #-----------  Multi-layer Perceptron for Regression
-#mlp_reg (X_train, y_train, X_val, y_val) 
+model = mlp_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val) 
 
 """
 OPTIONS:
