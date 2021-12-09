@@ -32,6 +32,8 @@ def log_reg(X_train, y_train, X_val, y_val):
     print("log_reg MAE:", mean_absolute_error(y_val, y_pred_val))    # 34.07342328208346
     print()
     
+    return reg
+    
 def sdg_reg (X_train, y_train, X_val, y_val):
     import numpy as np
     from sklearn.preprocessing import StandardScaler
@@ -55,7 +57,9 @@ def sdg_reg (X_train, y_train, X_val, y_val):
                 r2 =  r2_score(y_val, y_pred)
                 settings.append((learning_rate, eta0, loss, mae, r2))
                 print("sdg_reg r2:", settings[-1])
-
+    
+    return reg
+    
 def poly_reg (X_train, y_train, X_val, y_val, degree):
     import numpy as np
     from sklearn.preprocessing import PolynomialFeatures
@@ -82,6 +86,8 @@ def poly_reg (X_train, y_train, X_val, y_val, degree):
 
     #source: https://towardsdatascience.com/polynomial-regression-bbe8b9d97491
 
+    return reg
+
 def pois_reg (X_train, y_train, X_val, y_val):
     import numpy as np
     from sklearn.linear_model import PoissonRegressor
@@ -100,3 +106,5 @@ def pois_reg (X_train, y_train, X_val, y_val):
 
     print('pois_reg r2:', r2_score(y_val, y_pred_val))
     print("pois_reg MAE:", mean_absolute_error(y_val, y_pred_val))
+    
+    return reg

@@ -10,7 +10,7 @@ def support_vector_machine(X_train, y_train, X_val, y_val):
     r_sq = model1.score(X_val, y_val)
     print('coefficient of determination:', r_sq)
 
-    return r_sq
+    return model1
 
 
 
@@ -36,3 +36,4 @@ def decision_tree(X_train, y_train, X_val, y_val):
     model = tree.DecisionTreeClassifier()
     model = model.fit(X_train, y_train)
 
+    return model

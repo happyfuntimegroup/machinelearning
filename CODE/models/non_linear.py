@@ -20,6 +20,7 @@ def de_tree_reg (X_train, y_train, X_val, y_val, max_depth):
     print('de_tree_reg r2:', r2_score(y_val, y_pred_val))   
     print()
 
+    return model
 
 def kn_reg (X_train, y_train, X_val, y_val):
     import numpy as np
@@ -46,6 +47,7 @@ def kn_reg (X_train, y_train, X_val, y_val):
     print('kn_reg r2:', r2_score(y_val, y_pred_val))   
     print()
 
+    return model
 
 def my_svr (X_train, y_train, X_val, y_val):
     from sklearn.svm import SVR
@@ -54,6 +56,8 @@ def my_svr (X_train, y_train, X_val, y_val):
     model1 = svr.fit(X_train, np.ravel(y_train))
     r_sq1 = model1.score(X_val, y_val)
     print('svr r2 scr:', r_sq1)
+    
+    return model1
 
 def mlp_reg (X_train, y_train, X_val, y_val):
     import numpy as np
@@ -85,5 +89,6 @@ def mlp_reg (X_train, y_train, X_val, y_val):
     print("mlp score:", reg.score(X_val, y_val)) 
     print()
 
+    return reg
 
 
