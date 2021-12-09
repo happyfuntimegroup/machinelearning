@@ -405,8 +405,6 @@ print("Models complete")
 
 df_output = pd.DataFrame(columns = ['doi','citations'])
 
-# dict_output = {}
-
 y_test_log = model.predict(test.drop(['doi'], axis=1))
 y_test = np.exp(y_test_log) - 2
 
