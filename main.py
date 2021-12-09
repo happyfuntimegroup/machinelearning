@@ -179,8 +179,8 @@ test['nlog_team_sz'] = np.log(test['team_sz'].astype(np.float64))
 test['nlog_references'] = np.log(test['references'].astype(np.float64)) 
 
 # drop the unlogged version of the cols so they don't get counted twice. 
-num_X = num_X.drop(['year', 'title_length', 'field_citations_average', 'topic_popularity', 'venue_popularity', 'team_sz', 'references'], axis = 1)
-test = test.drop(['year', 'title_length', 'field_citations_average', 'topic_popularity', 'venue_popularity', 'team_sz', 'references'], axis = 1)
+num_X = num_X.drop(['year', 'title_length', 'field_citations_avarage', 'topic_popularity', 'venue_popularity', 'team_sz', 'references'], axis = 1)
+test = test.drop(['year', 'title_length', 'field_citations_avarage', 'topic_popularity', 'venue_popularity', 'team_sz', 'references'], axis = 1)
 
 """
 END do not reorder
