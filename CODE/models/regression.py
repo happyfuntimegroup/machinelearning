@@ -1,8 +1,18 @@
 def simple_linear(X_train, y_train, X_val, y_val):
     from sklearn.linear_model import LinearRegression
     from sklearn.metrics import r2_score, mean_absolute_error
+    from sklearn.pipeline import Pipeline
+    from sklearn.model_selection import GridSearchCV
+    from sklearn.preprocessing import StandardScaler
+    
+    pipe = Pipeline( steps = [
+                ('scaler', StandardScaler()),
+                ('reg', LinearRegression())
+                ] )
+    model = GridSearchCV(estimator = pipe,
+                         param_grid = {},
+                         cv = 5)
 
-    model = LinearRegression()
     reg = model.fit(X = X_train, y = y_train)
     y_pred_val = reg.predict(X_val)
     print("LinearRegression r2:", r2_score(y_val, y_pred_val))
