@@ -155,20 +155,31 @@ print("Missing values handled")
 # Also we would have to convert y back from log for the predict: there is somehing about this in one of the documents somewhere...
 
 ## Fill zeros
-# a = num_X['team_sz'].median()
-# data.loc[num_X['team_sz'].isnull(), 'team_sz'] = a  # fills 13 zero values
-#... the rest need this, too
+a = num_X['team_sz'].median()
+num_X.loc[num_X['team_sz'] == 0, 'team_sz'] = a  # fills 13 zero values
+test.loc[test['team_sz'] == 0, 'team_sz'] = a  
+
+b = num_X['references'].median()
+num_X.loc[num_X['references'] == 0, 'references'] = a  # fills 13 zero values
+test.loc[test['references'] == 0, 'references'] = a 
+
 
 ## Log some columns
-# num_X['nlog_year'] = np.log(num_X['year'])
-# num_X['nlog_title_length'] = np.log(num_X['title_length'])
-# num_X['nlog_field_citations_avarage'] = np.log(num_X['field_citations_avarage'])
-# num_X['nlog_topic_popularity'] = np.log(num_X['topic_popularity'].astype(np.float64))
-# num_X['nlog_venue_popularity'] = np.log(num_X['venue_popularity'].astype(np.float64))
-# #NOTE THIS ONE num_X['nlog_team_sz'] = np.log(num_X['team_sz'].astype(np.float64)) 
+num_X['nlog_year'] = np.log(num_X['year'])
+num_X['nlog_title_length'] = np.log(num_X['title_length'])
+num_X['nlog_field_citations_avarage'] = np.log(num_X['field_citations_avarage'])
+num_X['nlog_topic_popularity'] = np.log(num_X['topic_popularity'].astype(np.float64))
+num_X['nlog_venue_popularity'] = np.log(num_X['venue_popularity'].astype(np.float64))
+num_X['nlog_team_sz'] = np.log(num_X['team_sz'].astype(np.float64)) 
+num_X['nlog_references'] = np.log(num_X['references'].astype(np.float64)) 
 
-##I would really like to get references to log
-
+test['nlog_year'] = np.log(test['year'])
+test['nlog_title_length'] = np.log(test['title_length'])
+test['nlog_field_citations_avarage'] = np.log(test['field_citations_avarage'])
+test['nlog_topic_popularity'] = np.log(test['topic_popularity'].astype(np.float64))
+test['nlog_venue_popularity'] = np.log(test['venue_popularity'].astype(np.float64))
+test['nlog_team_sz'] = np.log(test['team_sz'].astype(np.float64)) 
+test['nlog_references'] = np.log(test['references'].astype(np.float64)) 
 
 # drop the unlogged version of the cols so they don't get counted twice. 
 ## not sure if this helps/hurts
