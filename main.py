@@ -364,9 +364,9 @@ y_test_log = model.predict(test.drop(['doi'], axis=1))
 y_test = np.exp(y_test_log) - 2
 
 # # Depending on the model output, a numbered series is returned, or a series with numerators in lists. For the first kind of output, use the following code....
- for index, i_paper in test.iterrows():
-     df_output.loc[index, 'doi'] = i_paper['doi'] 
-     df_output.loc[index, 'citations'] = y_test[index]
+for index, i_paper in test.iterrows():
+    df_output.loc[index, 'doi'] = i_paper['doi'] 
+    df_output.loc[index, 'citations'] = y_test[index]
    
 # .. for the latter kind of output, use this code:
 #for index, i_paper in test.iterrows():
