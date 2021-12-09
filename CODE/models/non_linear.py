@@ -70,7 +70,8 @@ def mlp_reg (X_train, y_train, X_val, y_val):
                         ('model', MLPRegressor())
     ] )
     model = GridSearchCV(estimator = pipe,
-                        param_grid = {'model__activation' : ['tanh', 'relu'],
+                        param_grid = {'model__alpha' : [.0001, .001, .01, .1],  #from sklearn: alpha=0.0001
+                                    'model__activation' : ['tanh', 'relu'],
                                     'model__solver' : ['sgd', 'adam'],
                                     'model__learning_rate' : ['constant', 'adaptive'],
                                     'model__max_iter': [5000]
