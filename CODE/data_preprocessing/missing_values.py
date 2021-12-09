@@ -9,9 +9,8 @@ def missing_values1 (data):
     data.loc[data['abstract'].isnull(), 'abstract'] = ""
     data.loc[data['authors'].isnull(), 'authors'] = ""
     data.loc[data['venue'].isnull(), 'venue'] = ""
-    data.loc[data['references'].isnull(), 'references'] = ""
+    data.loc[data['references'].isnull(), 'references'] = data['references'].mean()
     data.loc[data['topics'].isnull(), 'topics'] = ""
-
 
 def missing_values2 (data):
     """

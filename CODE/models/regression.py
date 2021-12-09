@@ -9,7 +9,7 @@ def simple_linear(X_train, y_train, X_val, y_val):
     print("LinearRegression MAE:", mean_absolute_error(y_val, y_pred_val))
     print()
     
-    #return r2, mae
+    return reg
     
 
 def log_reg(X_train, y_train, X_val, y_val):
