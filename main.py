@@ -70,16 +70,20 @@ with open('my_dataset2.pickle', 'rb') as dataset2:
 print("Data loaded")
 
 ##########################################
+#       drop na rows          #
+##########################################
+data.dropna(axis='index', how = 'any')  # not helpful over missing_values.
+
+##########################################
 #        Missing values handling         #
 ##########################################
-missing_values1(data)
-missing_values1(test)
+missing_values1(data)  # keep this on even with dropna; should be redundant but it seems to be needed...
+missing_values1(test)  # this needs to stay on
 
 ##########################################
 #       Create basic numeric df          #
 ##########################################
-end = len(data)
-num_X = data
+num_X = data.copy(deep = True)
 
 ##########################################
 #            Feature creation            #
@@ -122,19 +126,25 @@ _, test['authors'] = author_database(test) # reformatting authors name from test
 num_X['h_index'], test['h_index'] = paper_h_index(data, author_citation_dic, test) # Returns a numbered series. Must come after author names have been reformatted.
 
 
+
 """
 END do not reorder
 """
 print("Features created")
 ##########################################
-#    Deal with specific missing values   #
+#    Filling specific missing values     #
 ##########################################
 missing_values2(num_X)
 missing_values2(test)
       
-### Drop columns containing just strings
-num_X = num_X.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'doi', 'fields_of_study'], axis = 1)
-test = test.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'fields_of_study'], axis = 1)
+### Drop columns containing just strings or boolean
+num_X = num_X.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'doi', 'fields_of_study', 'is_open_access'], axis = 1)
+test = test.drop(['authors', 'abstract', 'topics', 'title', 'venue', 'fields_of_study', 'is_open_access'], axis = 1)
+
+### Drop duplicate rows - this is a lenient definition, but it returns a very small number of rows, so I like it better than a full match 
+duplicate = data[data.duplicated(['title', 'year'])]
+a = list(duplicate.index)
+num_X = num_X.drop(labels = a)
 
 print("Missing values handled")
 ##########################################
@@ -149,12 +159,9 @@ num_X = num_X[num_X['topic_variety'] < 60]
 num_X = num_X[num_X['venPresL'] < 300]
 num_X = num_X[num_X['h_index'] < 30]
 
-#%store num_X
-
 ##########################################
 #            Train/val split             #
 ##########################################
-## train/val split
 X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 print("Data split")
 
@@ -162,7 +169,6 @@ print("Data split")
 #     Outlier detection 2: Quantile      #
 ##########################################
 ### MODEL code for outlier detection
-### names: X_train, X_val, y_train, y_val
 
 # print(list(X_train.columns))
 
@@ -177,11 +183,14 @@ X_train = X_train.drop(labels = out_rows)
 y_train = y_train.drop(labels = out_rows)
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
-print("Outliers deleted")
+print("Outliers handeled")
 
 ##########################################
 #         Model implementations          #
 ##########################################
+# It takes 20 to 25 minutes to run all models
+
+
 from CODE.models.regression import simple_linear
 from CODE.models.regression import log_reg
 from CODE.models.regression import sdg_reg
@@ -196,12 +205,17 @@ IMPLEMENT models here: to run a model, delete the # and run
 NOTE: Please do not modify X_train, X_val, y_train, y_val in your model - make new variables if needed
 """
 
+#----------- Check for changes
+check_X = X_train.copy(deep = True)
+check_y = y_train.copy(deep = True)
+
 #-----------simple regression, all columns
-#simple_linear(X_train, y_train, X_val, y_val)
+# Leave this on as a baseline
+simple_linear(X_train, y_train, X_val, y_val)
 
 """
 MODEL RESULTS:
-R2: 0.03724  
+r2: 0.04709627575317288
 MSE: 33.38996
 # Worse after extra outlier removal (0.015478)
 """
@@ -214,6 +228,7 @@ R2: 0.006551953988217396
 MSE: 34.07342328208346
 # Worse after extra outlier removal (0.003)
 """
+
 #-----------SGD regression, all columns
 #sdg_reg (X_train, y_train, X_val, y_val)
 
@@ -271,31 +286,20 @@ For a baseline, run the corresponding model above
 
 
 #----------- Random Forrest for Regression
+# +/- 5 min to run
 #de_tree_reg (X_train, y_train, X_val, y_val, 50)
 
 """
 MODEL RESULTS:
-r2: 0.006518029337933218  depth = 2
-r2: 0.010480933407271853  depth = 3
-r2: 0.013140361155744351  depth = 4
-r2: 0.02475733890010956   depth = 10
-r2: 0.027754095018432956  depth = 20
-r2: 0.028205843489561455  depth = 30
-r2: 0.02787632669251372  depth = 50
+r2: 0.03378200504507167
 """
 
 #----------- K-Neighbors for Regression
-kn_reg (X_train, y_train, X_val, y_val)
-"""
-OPTIONS:
-algorithm = 'auto', 'ball_tree', 'kd_tree', 'brute'
-DEFAULT values: neighbors = 5, algorithm = 'auto', leaf_sz = 30
+#kn_reg (X_train, y_train, X_val, y_val)
 
+"""
 MODEL RESULTS:
-r2: 0.0020787461461421186  neighbors = 2
-r2: 0.0036641038448516072  neighbors = 3
-r2: 0.012151620462786172   neighbors = 10
-r2: 0.012527572947568677   neighbors = 20
+r2: 0.05784278300196066
 """
 
 #----------- SVR
@@ -304,10 +308,12 @@ r2: 0.012527572947568677   neighbors = 20
 # model = svr.fit(X_train, np.ravel(y_train))
 # r_sq1 = model.score(X_val, y_val)
 # print('r2 scr:', r_sq1)
+# print()
 
 
 #-----------  Multi-layer Perceptron for Regression
-#mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant') 
+#mlp_reg (X_train, y_train, X_val, y_val) 
+
 """
 OPTIONS:
 activation= 'identity', 'logistic', 'tanh', 'relu'
@@ -319,6 +325,11 @@ MODEL RESULTS:
 r2: 0.005729150866153665
 score: 0.005729150866153665
 """
+
+print("data unchanged:")
+print(check_X.equals(X_train))
+print(check_y.equals(y_train))
+print()
 print("Models complete")
 
 

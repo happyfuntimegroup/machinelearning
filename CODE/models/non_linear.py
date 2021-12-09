@@ -55,7 +55,7 @@ def my_svr (X_train, y_train, X_val, y_val):
     r_sq1 = model1.score(X_val, y_val)
     print('svr r2 scr:', r_sq1)
 
-def mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant'):
+def mlp_reg (X_train, y_train, X_val, y_val):
     import numpy as np
     from sklearn.neural_network import MLPRegressor
     from sklearn.metrics import r2_score
@@ -73,7 +73,7 @@ def mlp_reg (X_train, y_train, X_val, y_val, maxit=500, activation='relu', solve
                         param_grid = {'model__activation' : ['tanh', 'relu'],
                                     'model__solver' : ['sgd', 'adam'],
                                     'model__learning_rate' : ['constant', 'adaptive'],
-                                    'model__max_iter': [500]
+                                    'model__max_iter': [1000]
                         },
                         cv = 5
     )
