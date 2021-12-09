@@ -257,7 +257,7 @@ check_y = y_train.copy(deep = True)
 
 #-----------simple regression, all columns
 # Leave this on as a baseline
-model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+#model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -358,7 +358,7 @@ r2: 0.05784278300196066
 
 
 #-----------  Multi-layer Perceptron for Regression
-# model = mlp_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val) 
+#model = mlp_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val) 
 
 """
 OPTIONS:
@@ -368,8 +368,7 @@ lr= 'constant', 'invscaling', 'adaptive'
 DEFAULT values: maxit=500, activation='relu', solver='adam', alpha=0.0001, lr='constant'
 
 MODEL RESULTS:
-r2: 0.005729150866153665
-score: 0.005729150866153665
+r2: 0.48312678097660333
 """
 
 print("data unchanged:")
@@ -381,19 +380,19 @@ print("Models complete")
 ##########################################
 #     Fit model to X_train and X_val     #
 ##########################################
-# X_total = pd.concat([X_train, X_val])
-# y_total = pd.concat([y_train, y_val])
+X_total = pd.concat([X_train, X_val])
+y_total = pd.concat([y_train, y_val])
 
-# out_ref = (find_outliers_tukey(x = X_total['references'], top = 95, bottom = 0))[0]
-# out_team = (find_outliers_tukey(x = X_total['team_sz'], top = 95, bottom = 0))[0]
-# out_tvar = (find_outliers_tukey(x = X_total['topic_variety'], top = 95, bottom = 0))[0]
-# out_ven = (find_outliers_tukey(x = X_total['venPresL'], top = 95, bottom = 0))[0]
-# out_h = (find_outliers_tukey(x = X_total['h_index'], top = 95, bottom = 0))[0]
-# out_cit = (find_outliers_tukey(x = y_total['citations'], top = 93, bottom = 0))[0]
+out_ref = (find_outliers_tukey(x = X_total['references'], top = 95, bottom = 0))[0]
+out_team = (find_outliers_tukey(x = X_total['team_sz'], top = 95, bottom = 0))[0]
+out_tvar = (find_outliers_tukey(x = X_total['topic_variety'], top = 95, bottom = 0))[0]
+out_ven = (find_outliers_tukey(x = X_total['venPresL'], top = 95, bottom = 0))[0]
+out_h = (find_outliers_tukey(x = X_total['h_index'], top = 95, bottom = 0))[0]
+out_cit = (find_outliers_tukey(x = y_total['citations'], top = 93, bottom = 0))[0]
 
-# out_rows = out_cit + out_ref + out_team + out_tvar + out_ven + out_h
+out_rows = out_cit + out_ref + out_team + out_tvar + out_ven + out_h
 
-# model.fit(X_total.drop(labels = out_rows), np.ravel(y_total.drop(labels = out_rows)))
+model.fit(X_total.drop(labels = out_rows), np.ravel(y_total.drop(labels = out_rows)))
 
 ##########################################
 #  Writing file with predicted values    #
@@ -408,11 +407,18 @@ df_output = pd.DataFrame(columns = ['doi','citations'])
 y_test_log = model.predict(test.drop(['doi'], axis=1))
 y_test = np.exp(y_test_log) - 2
 
+# If a model is used where the y (target) did NOT need to be raveled, use this code
+for index, i_paper in test.iterrows():
+    df_output.loc[index, 'doi'] = i_paper['doi'] 
+    df_output.loc[index, 'citations'] = y_test[index]
+   
+# If a model is used where the y (target) had to be raveled (such as MLPRegressor or SVR), use this code
 for index, i_paper in test.iterrows():
     df_output.loc[index, 'doi'] = i_paper['doi'] 
     df_output.loc[index, 'citations'] = y_test[index][0]
 
 list_dic_output = df_output.to_dict(orient = 'records')
 
-with open('OUTPUT/predicted1.json', 'w') as outputfile:
-    json.dump(list_dic_output, outputfile)
+#jsonOutput = json.dumps(list_dic_output, indent = 4)
+with open('OUTPUT/predicted.json', 'w') as f:
+    json.dump(list_dic_output, f)
