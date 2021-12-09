@@ -1,3 +1,6 @@
+import numpy as np
+import pandas as pd
+
 def citations_per_author(df, author_db):
     """
     !!!! TAKES A LONG TIME --> PARALLELIZATION OR JUST DON'T INTEGRATE?
@@ -9,8 +12,6 @@ def citations_per_author(df, author_db):
     Output:
         - author_db['citations']
     """
-    import numpy as np
-    import pandas as pd
     author_db['citations'] = 0
     dic = {}
     for i, i_paper in df.iterrows():

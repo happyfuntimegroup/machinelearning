@@ -9,10 +9,13 @@ def topic_popularity(data, test):
     Output:
         - topic_freq:       Vector with most popular topic frequency for each paper.   [pandas series of integers]                                                         [int]
     """
+    
+    # creating variables for output feature for TEST and TRAIN set 
     topic_popularity_dict = {}
     topic_freq_data = pd.Series(dtype=pd.Int64Dtype())
     topic_freq_test = pd.Series(dtype=pd.Int64Dtype())
 
+    # check TRAIN data for topics, and counts the frequency
     for index, i_paper in data.iterrows():
         topics = i_paper['topics']
         for topic in topics:
@@ -21,8 +24,10 @@ def topic_popularity(data, test):
             else:
                 topic_popularity_dict[topic] = 1
 
+    # if topics are missing it returns the avarage frequency    
     missing_topics = sum(topic_popularity_dict.values())/len(topic_popularity_dict.values())
 
+    # checks TRAIN set and returns the count of most popular topic
     for index, i_paper in data.iterrows():
         topics = i_paper['topics']
         topics_list = []
@@ -34,6 +39,7 @@ def topic_popularity(data, test):
             most_popular = int(missing_topics)
         topic_freq_data[index,] = most_popular
     
+    # checks TEST set and returns the count of most popular topic based on field count in TRAIN set
     for index, i_paper in test.iterrows():
         topics = i_paper['topics']
         topics_list = []

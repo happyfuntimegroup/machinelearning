@@ -1,11 +1,15 @@
-def de_tree_reg (X_train, y_train, X_val, y_val, max_depth):
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.ensemble import RandomForestRegressor
-    from sklearn.pipeline import Pipeline
-    from sklearn.model_selection import GridSearchCV
-    from sklearn.metrics import r2_score
-    import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import r2_score
+import numpy as np
+from sklearn.svm import SVR
+from sklearn.neural_network import MLPRegressor
+from sklearn.metrics import r2_score
+from sklearn.pipeline import Pipeline
 
+def de_tree_reg (X_train, y_train, X_val, y_val, max_depth):
     pipe = Pipeline( steps = [
         ('scaler', StandardScaler()),
         ('model', RandomForestRegressor(max_depth=max_depth))
@@ -50,8 +54,6 @@ def kn_reg (X_train, y_train, X_val, y_val):
     return model
 
 def my_svr (X_train, y_train, X_val, y_val):
-    from sklearn.svm import SVR
-    import numpy as np
     svr = SVR()
     model1 = svr.fit(X_train, np.ravel(y_train))
     r_sq1 = model1.score(X_val, y_val)
@@ -60,13 +62,6 @@ def my_svr (X_train, y_train, X_val, y_val):
     return model1
 
 def mlp_reg (X_train, y_train, X_val, y_val):
-    import numpy as np
-    from sklearn.neural_network import MLPRegressor
-    from sklearn.metrics import r2_score
-    from sklearn.pipeline import Pipeline
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.model_selection import GridSearchCV
-
     y_ravel = np.ravel(y_train)
 
     pipe = Pipeline( steps = [
@@ -88,7 +83,6 @@ def mlp_reg (X_train, y_train, X_val, y_val):
     print('mlp r2:', r2_score(y_val, y_pred_val))  
     print("mlp score:", reg.score(X_val, y_val)) 
     print()
-
     return reg
 
 

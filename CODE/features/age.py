@@ -1,3 +1,6 @@
+from datetime import datetime
+import pandas as pd
+
 def age(df):
     """
     Computes the age of each paper by taking the year in 'year' column and subtract it from the current year.
@@ -9,8 +12,6 @@ def age(df):
         - age:  vector of age for each paper of the given dataset           [pandas series]
                     with age of each paper                                  [int]
     """
-    from datetime import datetime
-    import pandas as pd
 
     # Deal with missing values
     no_year = df[df['year'].isna()] # Return dataframe of all entries with NaN as year of publication
@@ -29,4 +30,4 @@ def age(df):
     
     # Output
     age = pd.Series(current_year - publishing_year)
-    return(age)
+    return age

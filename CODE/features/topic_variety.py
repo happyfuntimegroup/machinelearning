@@ -1,6 +1,6 @@
-#The number of different topics that a certain article is about 
+import pandas as pd
 
-def topics_variety(df):
+def topics_variety(data):
     """
     Computes the number of different topics that each paper is about by taking the number of topics in 'topics'
     Input:
@@ -9,8 +9,8 @@ def topics_variety(df):
         - Topic variety:   vector of topic_variety for each paper of the given dataset      [pandas series]
                             with Topic_variety                                                   [int]
     """
-    import pandas as pd
 
-    Topic_variety = pd.Series([len(i) for i in df['topics']])      # Topic variety
+    # Calculates how many topics a paper has
+    Topic_variety = pd.Series([len(i) for i in data['topics']]) 
 
-    return Topic_variety                                           #Output
+    return Topic_variety                                           

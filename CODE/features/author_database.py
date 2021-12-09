@@ -1,4 +1,7 @@
-def author_database(df):
+import pandas as pd
+from CODE.features.author_name import author_name
+
+def author_database(data):
     """
     Builds a database of all authors in df based on each last name in 'authors'. 
     Here, by last name, we mean the last word that appears for each author name in the author column.
@@ -11,12 +14,11 @@ def author_database(df):
         - reformatted_authors:  list of lists of authors groups for each paper
                                 (with reformatted names)                        [list]
     """
-    import pandas as pd
-    from CODE.features.author_name import author_name
-    
+    # Create variables 
     author_db  = {}
     reformatted_authors = []
-    for index, i_paper in df.iterrows():
+
+    for index, i_paper in data.iterrows():
         authors = i_paper['authors']    # Group of authors of the paper
         group = []
         for i_author in authors:

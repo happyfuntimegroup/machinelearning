@@ -7,15 +7,16 @@ def field_popularity(data, test):
     Input:
         - df['fields_of_study']:    dataframe (dataset); 'fields_of_study' column                   [pandas dataframe]
     Output:
-        - Field variety:           vector of field_variety for each paper of the given dataset      [pandas series]
-                                    with field_variety                                                   [int]
+        - field_freq:           Vector of count of the most popular field      [pandas series]
+                                   
     """
     
+    # creating variables for output feature for TEST and TRAIN set 
     field_popularity_dict = {}
     field_freq_data = pd.Series(dtype=pd.Int64Dtype())
     field_freq_test = pd.Series(dtype=pd.Int64Dtype())
 
-
+    # check TRAIN data for fields, and counts the frequency
     for index, i_paper in data.iterrows():
         fields = i_paper['fields_of_study']
 
@@ -24,9 +25,11 @@ def field_popularity(data, test):
                 field_popularity_dict[field] += 1
             else:
                 field_popularity_dict[field] = 1
-                
+
+    # if fields are missing it returns the avarage frequency           
     missing_fields = sum(field_popularity_dict.values())/len(field_popularity_dict.values())
 
+    # checks TRAIN set and returns the count of most popular field
     for index, i_paper in data.iterrows():
         fields = i_paper['fields_of_study']
         field_list = []
@@ -38,6 +41,7 @@ def field_popularity(data, test):
             most_popular = int(missing_fields)
         field_freq_data[index,] = most_popular
 
+    # checks TEST set and returns the count of most popular field based on field count in TRAIN set
     for index, i_paper in test.iterrows():
         fields = i_paper['fields_of_study']
         field_list = []

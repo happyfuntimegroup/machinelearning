@@ -1,5 +1,6 @@
 import pandas as pd
-def team_size(df):
+
+def team_size(data):
     """
     Computes team size of each paper by taking the number of authors in 'authors'
     Input:
@@ -8,7 +9,6 @@ def team_size(df):
         - team:             vector of team_size for each paper of the given dataset         [pandas series]
                             with team_size                                                  [int]
     """
-    team = pd.Series([len(i) for i in df['authors']])      # teamsize
+    team = pd.Series([len(i) for i in data['authors']])      # teamsize
 
-    # Output
-    return(team)
+    return team

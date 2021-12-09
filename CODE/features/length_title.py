@@ -1,4 +1,5 @@
 import pandas as pd
+
 def length_title(data):
     """
     Computes the length of the title from a paper by counting how many words it contains.
