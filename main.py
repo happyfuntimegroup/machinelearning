@@ -363,12 +363,12 @@ df_output = pd.DataFrame(columns = ['doi','citations'])
 y_test_log = model.predict(test.drop(['doi'], axis=1))
 y_test = np.exp(y_test_log) - 2
 
-# # If a model is used where the y (target) did NOT need to be raveled, use this code
+# # Depending on the model output, a numbered series is returned, or a series with numerators in lists. For the first kind of output, use the following code....
 # for index, i_paper in test.iterrows():
 #     df_output.loc[index, 'doi'] = i_paper['doi'] 
 #     df_output.loc[index, 'citations'] = y_test[index]
    
-# If a model is used where the y (target) had to be raveled (such as MLPRegressor or SVR), use this code
+# .. for the latter kind of output, use this code:
 for index, i_paper in test.iterrows():
     df_output.loc[index, 'doi'] = i_paper['doi'] 
     df_output.loc[index, 'citations'] = y_test[index][0]
