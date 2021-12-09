@@ -1,73 +1,65 @@
-def simple_linear(X_train, y_train, X_val, y_val):
-    from sklearn.linear_model import LinearRegression
-    from sklearn.metrics import r2_score, mean_absolute_error
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_absolute_error
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import SGDRegressor
+from sklearn.metrics import r2_score, mean_absolute_error
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import Ridge # Try this with ridge instead?
+from sklearn.linear_model import PoissonRegressor
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
 
+import numpy as np
+
+
+def simple_linear(X_train, y_train, X_val, y_val):
     model = LinearRegression()
     reg = model.fit(X = X_train, y = y_train)
     y_pred_val = reg.predict(X_val)
     print("LinearRegression r2:", r2_score(y_val, y_pred_val))
     print("LinearRegression MAE:", mean_absolute_error(y_val, y_pred_val))
-    print()
-    
     return reg
-    
 
 def log_reg(X_train, y_train, X_val, y_val):
-    import numpy as np
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.metrics import r2_score, mean_absolute_error
-
     scaler = StandardScaler()
     X_train_s = scaler.fit_transform(X_train)
     X_val_s = scaler.transform(X_val)
-
     y_ravel = np.ravel(y_train)
-
     model = LogisticRegression(random_state = 123, max_iter = 2000)
     reg = model.fit(X = X_train_s, y = y_ravel)
     y_pred_val = reg.predict(X_val_s)
-
     print('log_reg r2:', r2_score(y_val, y_pred_val))   # 0.006551953988217396
     print("log_reg MAE:", mean_absolute_error(y_val, y_pred_val))    # 34.07342328208346
-    print()
     
     return reg
     
 def sdg_reg (X_train, y_train, X_val, y_val):
-    import numpy as np
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.linear_model import SGDRegressor
-    from sklearn.metrics import r2_score, mean_absolute_error
 
     scaler = StandardScaler()
     X_train_z = scaler.fit_transform(X_train)
     X_val_z  =scaler.transform(X_val)
     y_ravel = np.ravel(y_train)
-    lr = [ 1, .1, .01, .001, .0001]
-    settings = []
-    for learning_rate in ['constant', 'optimal', 'invscaling']:
-        for loss in ['squared_error', 'huber']:
-            for eta0 in lr:
-                model = SGDRegressor(learning_rate=learning_rate, eta0=eta0, loss=loss,random_state=666, max_iter=5000)
-                reg = model.fit(X_train_z, y_ravel)
-                y_pred = reg.predict(X_val_z)
+    pipe = Pipeline(steps= [
+        ('scaler', StandardScaler()),
+        ('model', SGDRegressor(random_state=666, max_iter=5000))])
 
-                mae = mean_absolute_error(y_val, y_pred)
-                r2 =  r2_score(y_val, y_pred)
-                settings.append((learning_rate, eta0, loss, mae, r2))
-                print("sdg_reg r2:", settings[-1])
+    model = GridSearchCV(estimator=pipe, param_grid={ 
+        'model__learning_rate' : ['constant', 'optimal', 'invscaling'],
+        'model__loss' : ['squared_error', 'huber'],
+        'model__eta0' : [ 1, .1, .01, .001, .0001]}, 
+        cv=5)
+
+    reg = model.fit(X_train_z, y_ravel)
+    y_pred = reg.predict(X_val_z)
+    mae = mean_absolute_error(y_val, y_pred)
+    r2 =  r2_score(y_val, y_pred)
+    print("mae:", mae)
+    print("r2", r2)
     
     return reg
     
 def poly_reg (X_train, y_train, X_val, y_val, degree):
-    import numpy as np
-    from sklearn.preprocessing import PolynomialFeatures
-    #from sklearn.linear_model import LinearRegression   
-    from sklearn.linear_model import Ridge # Try this with ridge instead?
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.metrics import r2_score, mean_absolute_error
-
     scaler = StandardScaler()
     X_train_z = scaler.fit_transform(X_train)
     X_val_z  =scaler.transform(X_val)
@@ -89,11 +81,6 @@ def poly_reg (X_train, y_train, X_val, y_val, degree):
     return reg
 
 def pois_reg (X_train, y_train, X_val, y_val):
-    import numpy as np
-    from sklearn.linear_model import PoissonRegressor
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.metrics import r2_score, mean_absolute_error
-
     scaler = StandardScaler()
     X_train_s = scaler.fit_transform(X_train)
     X_val_s = scaler.transform(X_val)
