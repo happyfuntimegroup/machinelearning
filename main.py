@@ -212,7 +212,7 @@ X_train, X_val, y_train, y_val = split_val(num_X, target_variable = 'citations')
 print("Data split")
 
 ##########################################
-#    Outlier detection: Quantile      #
+#   Outlier detection X_trian: Quantile  #
 ##########################################
 ### MODEL code for outlier detection
 # You still want as many validation samples as possible to get a realistic idea of model performance.
@@ -227,10 +227,6 @@ out_h = (find_outliers_tukey(x = X_train['h_index'], top = 95, bottom = 0))[0]
 out_cit = (find_outliers_tukey(x = y_train['citations'], top = 93, bottom = 0))[0]
 
 out_rows = out_cit + out_ref + out_team + out_tvar + out_ven + out_h
-
-out_rows = sorted(list(set(out_rows)))
-X_train = X_train.drop(labels = out_rows)
-y_train = y_train.drop(labels = out_rows)
 
 # Potential features to get rid of: team_sz; year and age are perfect correlates
 print("Outliers handeled")
@@ -261,7 +257,7 @@ check_y = y_train.copy(deep = True)
 
 #-----------simple regression, all columns
 # Leave this on as a baseline
-model = simple_linear(X_train, y_train, X_val, y_val)
+model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -382,6 +378,22 @@ print(check_y.equals(y_train))
 print()
 print("Models complete")
 
+##########################################
+#     Fit model to X_train and X_val     #
+##########################################
+X_total = pd.concat([X_train, X_val])
+y_total = pd.concat([y_train, y_val])
+
+out_ref = (find_outliers_tukey(x = X_total['references'], top = 95, bottom = 0))[0]
+out_team = (find_outliers_tukey(x = X_total['team_sz'], top = 95, bottom = 0))[0]
+out_tvar = (find_outliers_tukey(x = X_total['topic_variety'], top = 95, bottom = 0))[0]
+out_ven = (find_outliers_tukey(x = X_total['venPresL'], top = 95, bottom = 0))[0]
+out_h = (find_outliers_tukey(x = X_total['h_index'], top = 95, bottom = 0))[0]
+out_cit = (find_outliers_tukey(x = y_total['citations'], top = 93, bottom = 0))[0]
+
+out_rows = out_cit + out_ref + out_team + out_tvar + out_ven + out_h
+
+model.fit(X_total.drop(labels = out_rows), y_total.drop(labels = out_rows))
 
 ##########################################
 #  Writing file with predicted values    #
