@@ -216,8 +216,8 @@ print("Data split")
 #   Therefore, removing outliers happens after splitting the dataset into a training and validation set.
 #   After splitting, we detect outliers in the training set to give the model a general idea of what to expect.
 
-out_ref = (find_outliers_tukey(x = X_train['references'], top = 95, bottom = 0))[0]
-out_team = (find_outliers_tukey(x = X_train['team_sz'], top = 95, bottom = 0))[0]
+#out_ref = (find_outliers_tukey(x = X_train['references'], top = 95, bottom = 0))[0]
+#out_team = (find_outliers_tukey(x = X_train['team_sz'], top = 95, bottom = 0))[0]
 out_tvar = (find_outliers_tukey(x = X_train['topic_variety'], top = 95, bottom = 0))[0]
 out_ven = (find_outliers_tukey(x = X_train['venPresL'], top = 95, bottom = 0))[0]
 out_h = (find_outliers_tukey(x = X_train['h_index'], top = 95, bottom = 0))[0]
