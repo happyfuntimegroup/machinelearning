@@ -49,17 +49,14 @@ def kn_reg (X_train, y_train, X_val, y_val):
     y_pred_val = model.predict(X_val)
 
     print('kn_reg r2:', r2_score(y_val, y_pred_val))   
-    print()
-
     return model
 
 def my_svr (X_train, y_train, X_val, y_val):
     svr = SVR()
-    model1 = svr.fit(X_train, np.ravel(y_train))
-    r_sq1 = model1.score(X_val, y_val)
+    model = svr.fit(X_train, np.ravel(y_train))
+    r_sq1 = model.score(X_val, y_val)
     print('svr r2 scr:', r_sq1)
-    
-    return model1
+    return model
 
 def mlp_reg (X_train, y_train, X_val, y_val):
     y_ravel = np.ravel(y_train)
@@ -77,12 +74,11 @@ def mlp_reg (X_train, y_train, X_val, y_val):
                         },
                         cv = 5
     )
-    reg = model.fit(X_train, y_ravel)
-    y_pred_val = reg.predict(X_val)
+    model = model.fit(X_train, y_ravel)
+    y_pred_val = model.predict(X_val)
 
     print('mlp r2:', r2_score(y_val, y_pred_val))  
-    print("mlp score:", reg.score(X_val, y_val)) 
-    print()
-    return reg
+    print("mlp score:", model.score(X_val, y_val)) 
+    return model
 
 

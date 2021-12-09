@@ -96,7 +96,7 @@ This is the dataframe we will use to train the models.
 DO NOT change the order in this section if at all possible
 """
 num_X['title_length'] = length_title(data)      # returns a numbered series with wordlength of the title
-test['title_length'] = length_title(test)
+test['title_length'] = length_title(test)       # returns a numbered series with wordlength of the title
 num_X['field_variety'] = field_variety(data)    # returns a numbered series with amount of fields
 test['field_variety'] = field_variety(test)    # returns a numbered series with amount of fields
 num_X['field_popularity'], test['field_popularity'] = field_popularity(data, test) # returns a numbered series with 
@@ -162,7 +162,6 @@ b = num_X['references'].median()
 num_X.loc[num_X['references'] == 0, 'references'] = a  # fills 13 zero values
 test.loc[test['references'] == 0, 'references'] = a 
 
-
 ## Log some columns
 num_X['nlog_year'] = np.log(num_X['year'])
 num_X['nlog_title_length'] = np.log(num_X['title_length'])
@@ -180,9 +179,6 @@ test['nlog_venue_popularity'] = np.log(test['venue_popularity'].astype(np.float6
 test['nlog_team_sz'] = np.log(test['team_sz'].astype(np.float64)) 
 test['nlog_references'] = np.log(test['references'].astype(np.float64)) 
 
-# drop the unlogged version of the cols so they don't get counted twice. 
-## not sure if this helps/hurts
-
 """
 END do not reorder
 """
@@ -194,7 +190,7 @@ print("Features created")
 ##########################################
 print(num_X.shape)
 num_X = num_X.replace([np.inf, -np.inf], np.nan)
-num_X = num_X.dropna(axis='index', how = 'any')  # the logging made some wonky numbers
+num_X = num_X.dropna(axis='index', how = 'any')  
 print(num_X.shape)
 
 ##########################################
@@ -202,8 +198,6 @@ print(num_X.shape)
 ##########################################
 # Need to add a constant to avoid zeros - REMEMBER this when undoing the log.
 num_X['citations'] = (np.log(num_X['citations'].astype(np.float64)+2))
-#num_X['citations'] = num_X['citations'].astype(int) 
-
 
 ##########################################
 #            Train/val split             #
@@ -234,8 +228,7 @@ print("Outliers handeled")
 ##########################################
 #         Model implementations          #
 ##########################################
-# It takes 20 to 25 minutes to run all models
-
+# It takes 30 to 60 minutes to run all models
 
 from CODE.models.regression import simple_linear
 from CODE.models.regression import log_reg
@@ -248,7 +241,6 @@ from CODE.models.non_linear import my_svr
 from CODE.models.non_linear import mlp_reg
 """
 IMPLEMENT models here: to run a model, delete the # and run
-NOTE: Please do not modify X_train, X_val, y_train, y_val in your model - make new variables if needed
 """
 
 #----------- Check for changes
@@ -257,7 +249,7 @@ check_y = y_train.copy(deep = True)
 
 #-----------simple regression, all columns
 # Leave this on as a baseline
-#model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+# model = simple_linear(X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -276,7 +268,7 @@ MSE: 34.07342328208346
 """
 
 #-----------SGD regression, all columns
-#model = sdg_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+# model = sdg_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 lr = [ 1, .1, .01, .001, .0001]
@@ -300,7 +292,7 @@ MAE 35.1660
 """
 
 #-----------poisson regression, all columns
-#pois_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
+# pois_reg (X_train.drop(labels = out_rows), y_train.drop(labels = out_rows), X_val, y_val)
 
 """
 MODEL RESULTS:
@@ -354,7 +346,6 @@ r2: 0.05784278300196066
 # model = svr.fit(X_train.drop(labels = out_rows), np.ravel(y_train.drop(labels = out_rows) ))
 # r_sq1 = model.score(X_val, y_val)
 # print('r2 scr:', r_sq1)
-# print()
 
 
 #-----------  Multi-layer Perceptron for Regression
@@ -374,7 +365,6 @@ r2: 0.48312678097660333
 print("data unchanged:")
 print(check_X.equals(X_train))
 print(check_y.equals(y_train))
-print()
 print("Models complete")
 
 ##########################################
